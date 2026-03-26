@@ -1,4 +1,4 @@
-🌐 [English](README.md) | [한국어](README_ko.md) | [日本語](README_ja.md) | [中文](README_zh.md) | [Español](README_es.md) | [Français](README_fr.md) | [Deutsch](README_de.md) | [Русский](README_ru.md) | [हिन्दी](README_hi.md) | [العربية](README_ar.md)
+🌐 [English](README.md) | [한국어](readme/README_ko.md) | [日本語](readme/README_ja.md) | [中文](readme/README_zh.md) | [Español](readme/README_es.md) | [Français](readme/README_fr.md) | [Deutsch](readme/README_de.md) | [Русский](readme/README_ru.md) | [हिन्दी](readme/README_hi.md) | [العربية](readme/README_ar.md)
 
 # ai-initializer
 
