@@ -1,98 +1,98 @@
 # ai-initializer
 
-**AI 코딩 도구를 위한 프로젝트 컨텍스트 자동 생성기**
+**Automatic project context generator for AI coding tools**
 
-> 프로젝트 디렉토리를 스캔하고, AI 에이전트가 즉시 작업할 수 있도록
-> `AGENTS.md` + 지식/스킬/역할 컨텍스트를 자동 생성합니다.
+> Scans your project directory and auto-generates
+> `AGENTS.md` + knowledge/skill/role context so AI agents can start working immediately.
 
 ```
-하나의 명령 → 프로젝트 분석 → AGENTS.md 생성 → 모든 AI 도구에서 동작
+One command → Project analysis → AGENTS.md generation → Works with any AI tool
 ```
 
 ---
 
-## 사용법
+## Usage
 
-> **토큰 사용량 주의** — 초기 설정 시 상위 모델로 전체 프로젝트를 분석하고 여러 파일(AGENTS.md, .ai-agents/context/, .ai-agents/skills/, .ai-agents/roles/)을 생성합니다. 프로젝트 규모에 따라 수만 토큰 이상 소모될 수 있습니다. 이는 1회성 비용이며, 이후 세션부터는 미리 구축된 컨텍스트를 로드하여 즉시 시작됩니다.
+> **Token usage notice** — During initial setup, a top-tier model analyzes the entire project and generates multiple files (AGENTS.md, .ai-agents/context/, .ai-agents/skills/, .ai-agents/roles/). This may consume tens of thousands of tokens depending on project size. This is a one-time cost; subsequent sessions load the pre-built context and start instantly.
 
 ```bash
-# 1. AI에게 HOW_TO_AGENTS.md를 읽히면 알아서 설정
+# 1. Have the AI read HOW_TO_AGENTS.md and it handles the rest
 
-# 옵션 A: 영어 (추천 — 토큰 비용 절감, AI 성능 최적)
+# Option A: English (recommended — lower token cost, optimal AI performance)
 claude --dangerously-skip-permissions --model claude-opus-4-6 \
   "Read HOW_TO_AGENTS.md and generate AGENTS.md tailored to this project"
 
-# 옵션 B: 사용자 언어 (AGENTS.md를 사람이 직접 수정하는 경우 추천)
+# Option B: User's language (recommended if you plan to manually edit AGENTS.md)
 claude --dangerously-skip-permissions --model claude-opus-4-6 \
   "HOW_TO_AGENTS.md를 읽고 이 프로젝트에 맞게 AGENTS.md를 생성하라"
 
-# 추천: --model claude-opus-4-6 (또는 이후 버전) 사용 시 최상의 결과
-# 추천: --dangerously-skip-permissions 등의 자율모드로 중단 없이 실행
+# Recommended: --model claude-opus-4-6 (or later) for best results
+# Recommended: --dangerously-skip-permissions for uninterrupted autonomous execution
 
-# 2. 생성된 에이전트로 작업 시작
+# 2. Start working with the generated agents
 ./ai-agency.sh
 ```
 
 ---
 
-## 왜 필요한가?
+## Why do you need this?
 
-AI 코딩 도구는 매 세션마다 **프로젝트를 처음부터 다시 이해**합니다.
+AI coding tools **re-learn the project from scratch** every session.
 
-| 문제 | 결과 |
+| Problem | Consequence |
 |---|---|
-| 팀 컨벤션을 모름 | 코드 스타일 불일치 |
-| API 전체 맵을 모름 | 매번 전체 코드베이스 탐색 (비용 +20%) |
-| 금지 사항을 모름 | 프로덕션 DB 직접 접근 등 위험한 작업 |
-| 서비스 간 관계를 모름 | 사이드 이펙트 누락 |
+| Doesn't know team conventions | Code style inconsistencies |
+| Doesn't know the full API map | Explores entire codebase each time (cost +20%) |
+| Doesn't know prohibited actions | Risky operations like direct production DB access |
+| Doesn't know service dependencies | Missed side effects |
 
-**ai-initializer**는 이 문제를 해결합니다 — 한번 생성하면, 어떤 AI 도구든 프로젝트를 즉시 이해합니다.
-
----
-
-## 핵심 원칙
-
-> ETH Zurich (2026.03): **추론 가능한 내용을 포함하면 성공률이 떨어지고 비용이 +20% 증가한다**
-
-```
-포함 O (비추론적)          .ai-agents/context/ (고비용 추론)        포함 X (저비용 추론)
-─────────────────      ──────────────────────────────        ──────────────────
-팀 컨벤션                  전체 API 맵                           디렉토리 구조
-금지 사항                  데이터 모델 관계도                       단일 파일 내용
-PR/커밋 포맷               이벤트 발행/구독 스펙                     프레임워크 공식 문서
-숨은 의존성                인프라 토폴로지                          import 관계
-```
+**ai-initializer** solves this — generate once, and any AI tool understands your project instantly.
 
 ---
 
-## 생성 구조
+## Core Principles
+
+> ETH Zurich (2026.03): **Including inferable content reduces success rates and increases cost by +20%**
+
+```
+Include (non-inferable)        .ai-agents/context/ (costly inference)    Exclude (cheap inference)
+───────────────────────        ────────────────────────────────────      ────────────────────────
+Team conventions               Full API map                              Directory structure
+Prohibited actions             Data model relationships                  Single file contents
+PR/commit formats              Event pub/sub specs                       Official framework docs
+Hidden dependencies            Infrastructure topology                   Import relationships
+```
+
+---
+
+## Generated Structure
 
 ```
 project-root/
-├── AGENTS.md                          # PM 에이전트 (전체 오케스트레이션)
+├── AGENTS.md                          # PM Agent (overall orchestration)
 ├── .ai-agents/
-│   ├── context/                       # 지식 파일 (세션 시작 시 로드)
-│   │   ├── domain-overview.md         #   비즈니스 도메인, 정책, 제약
-│   │   ├── data-model.md              #   엔티티 정의, 관계, 상태 전이
-│   │   ├── api-spec.json              #   API 맵 (JSON DSL, 3배 토큰 절약)
-│   │   ├── event-spec.json            #   Kafka/MQ 이벤트 스펙
-│   │   ├── infra-spec.md              #   Helm 차트, 네트워크, 배포 순서
-│   │   └── external-integration.md    #   외부 API, 인증, 레이트 리밋
-│   ├── skills/                        # 행동 워크플로우 (필요 시 로드)
-│   │   ├── develop/SKILL.md           #   개발: 분석→설계→구현→테스트→PR
-│   │   ├── deploy/SKILL.md            #   배포: 태그→배포요청→검증
-│   │   ├── review/SKILL.md            #   리뷰: 체크리스트 기반
-│   │   ├── hotfix/SKILL.md            #   긴급 수정 워크플로우
-│   │   └── context-update/SKILL.md    #   컨텍스트 파일 갱신 절차
-│   └── roles/                         # 역할 정의 (역할별 컨텍스트 깊이)
-│       ├── pm.md                      #   프로젝트 매니저
-│       ├── backend.md                 #   백엔드 개발자
-│       ├── frontend.md                #   프론트엔드 개발자
-│       ├── sre.md                     #   SRE / 인프라
-│       └── reviewer.md                #   코드 리뷰어
+│   ├── context/                       # Knowledge files (loaded at session start)
+│   │   ├── domain-overview.md         #   Business domain, policies, constraints
+│   │   ├── data-model.md              #   Entity definitions, relationships, state transitions
+│   │   ├── api-spec.json              #   API map (JSON DSL, 3x token savings)
+│   │   ├── event-spec.json            #   Kafka/MQ event specs
+│   │   ├── infra-spec.md              #   Helm charts, networking, deployment order
+│   │   └── external-integration.md    #   External APIs, auth, rate limits
+│   ├── skills/                        # Behavioral workflows (loaded on demand)
+│   │   ├── develop/SKILL.md           #   Dev: analyze → design → implement → test → PR
+│   │   ├── deploy/SKILL.md            #   Deploy: tag → deploy request → verify
+│   │   ├── review/SKILL.md            #   Review: checklist-based
+│   │   ├── hotfix/SKILL.md            #   Emergency fix workflow
+│   │   └── context-update/SKILL.md    #   Context file update procedure
+│   └── roles/                         # Role definitions (role-specific context depth)
+│       ├── pm.md                      #   Project Manager
+│       ├── backend.md                 #   Backend Developer
+│       ├── frontend.md                #   Frontend Developer
+│       ├── sre.md                     #   SRE / Infrastructure
+│       └── reviewer.md                #   Code Reviewer
 │
 ├── apps/
-│   ├── api/AGENTS.md                  # 서비스별 에이전트
+│   ├── api/AGENTS.md                  # Per-service agents
 │   └── web/AGENTS.md
 └── infra/
     └── helm/AGENTS.md
@@ -100,11 +100,11 @@ project-root/
 
 ---
 
-## 작동 방식
+## How It Works
 
-### 1단계: 프로젝트 스캔 & 분류
+### Step 1: Project Scan & Classification
 
-디렉토리를 depth 3까지 탐색하고, 파일 패턴으로 자동 분류합니다.
+Explores directories up to depth 3 and auto-classifies by file patterns.
 
 ```
 deployment.yaml + service.yaml  →  k8s-workload
@@ -112,50 +112,50 @@ values.yaml (Helm)              →  infra-component
 package.json + *.tsx            →  frontend
 go.mod                          →  backend-go
 Dockerfile + CI config          →  cicd
-...19가지 타입 자동 판별
+...19 types auto-detected
 ```
 
-### 2단계: 컨텍스트 생성
+### Step 2: Context Generation
 
-분류된 타입에 따라 `.ai-agents/context/` 지식 파일을 **코드를 실제 분석하여** 생성합니다.
+Generates `.ai-agents/context/` knowledge files by **actually analyzing the code** based on detected types.
 
 ```
-백엔드 서비스 감지
-  → 라우트/컨트롤러 스캔 → api-spec.json 생성
-  → 엔티티/스키마 스캔   → data-model.md 생성
-  → Kafka 설정 스캔      → event-spec.json 생성
+Backend service detected
+  → Scan routes/controllers → Generate api-spec.json
+  → Scan entities/schemas   → Generate data-model.md
+  → Scan Kafka config       → Generate event-spec.json
 ```
 
-### 3단계: AGENTS.md 생성
+### Step 3: AGENTS.md Generation
 
-각 디렉토리에 맞는 템플릿으로 AGENTS.md를 생성합니다.
+Generates AGENTS.md for each directory using appropriate templates.
 
 ```
 Root AGENTS.md (Global Conventions)
-  → 커밋: Conventional Commits
-  → PR: 템플릿 필수, 1명 이상 승인
-  → 브랜치: feature/{ticket}-{desc}
+  → Commits: Conventional Commits
+  → PR: Template required, 1+ approvals
+  → Branches: feature/{ticket}-{desc}
        │
-       ▼ 자동 상속 (하위에서 반복하지 않음)
+       ▼ Auto-inherited (not repeated in children)
   apps/api/AGENTS.md
-    → 오버라이드만: "이 서비스는 Python 사용"
+    → Overrides only: "This service uses Python"
 ```
 
-### 4단계: 벤더별 부트스트랩
+### Step 4: Vendor-Specific Bootstrap
 
-생성된 AGENTS.md를 **모든 AI 도구가 읽도록** 벤더별 설정에 브릿지를 추가합니다.
+Adds bridges to vendor-specific configs so **all AI tools read** the generated AGENTS.md.
 
 ```
 ┌──────────────┐     ┌─────────────┐     ┌─────────────┐
 │ Claude Code  │     │   Cursor    │     │   Codex     │
 │  CLAUDE.md   │     │  .mdc rules │     │  AGENTS.md  │
-│      ↓       │     │      ↓      │     │  (직접 인식)  │
+│      ↓       │     │      ↓      │     │  (native)   │
 │ "read        │     │ "read       │     │      ✓      │
 │  AGENTS.md"  │     │  AGENTS.md" │     │             │
 └──────┬───────┘     └──────┬──────┘     └─────────────┘
        └──────────┬─────────┘
                   ▼
-           AGENTS.md (단일 진실 소스)
+           AGENTS.md (single source of truth)
                   │
         ┌─────────┼─────────┐
         ▼         ▼         ▼
@@ -163,35 +163,35 @@ Root AGENTS.md (Global Conventions)
    context/     skills/      roles/
 ```
 
-> **원칙:** 이미 사용 중인 벤더만 부트스트랩을 생성합니다. 사용하지 않는 도구의 설정 파일을 임의로 만들지 않습니다.
+> **Principle:** Bootstrap files are only generated for vendors already in use. Config files for unused tools are never created.
 
 ---
 
-## 벤더 호환성
+## Vendor Compatibility
 
-| 도구 | AGENTS.md 자동 인식 | 부트스트랩 |
+| Tool | Auto-reads AGENTS.md | Bootstrap |
 |---|---|---|
-| **OpenAI Codex** | O (기본) | 불필요 |
-| **Claude Code** | △ (fallback) | `CLAUDE.md`에 지시문 추가 |
-| **Cursor** | X | `.cursor/rules/` 에 `.mdc` 추가 |
-| **GitHub Copilot** | X | `.github/copilot-instructions.md` 생성 |
-| **Windsurf** | X | `.windsurfrules`에 지시문 추가 |
-| **Aider** | O | `.aider.conf.yml`에 read 추가 |
+| **OpenAI Codex** | Yes (native) | Not needed |
+| **Claude Code** | Partial (fallback) | Adds directive to `CLAUDE.md` |
+| **Cursor** | No | Adds `.mdc` to `.cursor/rules/` |
+| **GitHub Copilot** | No | Generates `.github/copilot-instructions.md` |
+| **Windsurf** | No | Adds directive to `.windsurfrules` |
+| **Aider** | Yes | Adds read to `.aider.conf.yml` |
 
-부트스트랩 자동 생성:
+Auto-generate bootstraps:
 ```bash
 bash scripts/sync-ai-rules.sh
 ```
 
 ---
 
-## 계층적 에이전트 구조
+## Hierarchical Agent Structure
 
 ```
 ┌───────────────────────────────────────┐
 │  Root PM Agent (AGENTS.md)            │
-│  Global Conventions + 위임 규칙         │
-│  "설계 검증이 코드 검증보다 중요하다"         │
+│  Global Conventions + Delegation Rules│
+│  "Design validation > Code validation"│
 └────────┬──────────┬─────────┬────────┘
          │          │         │
     ┌────▼────┐ ┌───▼────┐ ┌──▼─────┐
@@ -199,21 +199,21 @@ bash scripts/sync-ai-rules.sh
     │ Expert  │ │  SRE   │ │Planner │
     └─────────┘ └────────┘ └────────┘
 
-위임: 부모 → 자식 (해당 디렉토리 AGENTS.md 범위 내에서 작업)
-보고: 자식 → 부모 (작업 완료 후 변경 요약)
-조율: 동일 레벨 간 직접 소통 X → 부모를 통해 간접 조율
+Delegation: Parent → Child (operates within that directory's AGENTS.md scope)
+Reporting:  Child → Parent (change summary after task completion)
+Coordination: No direct peer-to-peer — indirect coordination through parent
 ```
 
 ---
 
-## 토큰 최적화
+## Token Optimization
 
-| 형식 | 토큰 수 | 비고 |
+| Format | Token Count | Notes |
 |---|---|---|
-| 자연어 API 설명 | ~200 토큰 | |
-| JSON DSL | ~70 토큰 | **3배 절약** |
+| Natural language API description | ~200 tokens | |
+| JSON DSL | ~70 tokens | **3x savings** |
 
-**api-spec.json 예시:**
+**api-spec.json example:**
 ```json
 {
   "service": "order-api",
@@ -226,64 +226,64 @@ bash scripts/sync-ai-rules.sh
 }
 ```
 
-**AGENTS.md 목표:** 치환 후 **300 토큰 이내**
+**AGENTS.md target:** Under **300 tokens** after substitution
 
 ---
 
-## 세션 복원 프로토콜
+## Session Restore Protocol
 
 ```
-세션 시작:
-  1. AGENTS.md 읽기 (대부분의 AI 도구가 자동 수행)
-  2. Context Files 경로 따라 .ai-agents/context/ 로드
-  3. .ai-agents/context/current-work.md 확인 (진행 중 작업)
-  4. git log --oneline -10 (최근 변경 파악)
+Session start:
+  1. Read AGENTS.md (most AI tools do this automatically)
+  2. Follow context file paths to load .ai-agents/context/
+  3. Check .ai-agents/context/current-work.md (in-progress work)
+  4. git log --oneline -10 (understand recent changes)
 
-세션 종료:
-  1. 진행 중 작업 → current-work.md 기록
-  2. 새로 학습한 도메인 지식 → context 파일 갱신
-  3. 미완료 TODO → 명시적 기록
-```
-
----
-
-## 컨텍스트 유지보수
-
-코드가 변경되면 `.ai-agents/context/` 파일도 반드시 갱신해야 합니다.
-
-```
-API 추가/변경/삭제        →  api-spec.json 갱신
-DB 스키마 변경            →  data-model.md 갱신
-이벤트 스펙 변경          →  event-spec.json 갱신
-비즈니스 정책 변경        →  domain-overview.md 갱신
-외부 연동 변경            →  external-integration.md 갱신
-인프라 설정 변경          →  infra-spec.md 갱신
-```
-
-> 갱신하지 않으면 다음 세션에서 **오래된 컨텍스트로 작업**하게 됩니다.
-
----
-
-## 도입 체크리스트
-
-```
-Phase 1 (기본)                Phase 2 (컨텍스트)              Phase 3 (운영)
-──────────────              ──────────────────            ────────────────
-☐ AGENTS.md 생성             ☐ .ai-agents/context/ 생성      ☐ .ai-agents/roles/ 정의
-☐ 빌드/테스트 커맨드 기록        ☐ domain-overview.md            ☐ 멀티 에이전트 세션 운영
-☐ 컨벤션, 금지사항 기록         ☐ api-spec.json (DSL)           ☐ .ai-agents/skills/ 워크플로우
-☐ Global Conventions       ☐ data-model.md                 ☐ 피드백 루프 반복 개선
-☐ 벤더별 부트스트랩             ☐ 유지보수 규칙 설정
+Session end:
+  1. In-progress work → Record in current-work.md
+  2. Newly learned domain knowledge → Update context files
+  3. Incomplete TODOs → Record explicitly
 ```
 
 ---
 
-## 라이선스
+## Context Maintenance
+
+When code changes, `.ai-agents/context/` files must be updated accordingly.
+
+```
+API added/changed/removed     →  Update api-spec.json
+DB schema changed             →  Update data-model.md
+Event spec changed            →  Update event-spec.json
+Business policy changed       →  Update domain-overview.md
+External integration changed  →  Update external-integration.md
+Infrastructure config changed →  Update infra-spec.md
+```
+
+> Failing to update means the next session will **work with stale context**.
+
+---
+
+## Adoption Checklist
+
+```
+Phase 1 (Basics)               Phase 2 (Context)                Phase 3 (Operations)
+────────────────               ─────────────────                ────────────────────
+☐ Generate AGENTS.md           ☐ Create .ai-agents/context/     ☐ Define .ai-agents/roles/
+☐ Record build/test commands   ☐ domain-overview.md             ☐ Run multi-agent sessions
+☐ Record conventions & rules   ☐ api-spec.json (DSL)            ☐ .ai-agents/skills/ workflows
+☐ Global Conventions           ☐ data-model.md                  ☐ Iterative feedback loop
+☐ Vendor bootstraps            ☐ Set up maintenance rules
+```
+
+---
+
+## License
 
 MIT
 
 ---
 
 <p align="center">
-  <sub>AI 에이전트가 프로젝트를 이해하는 데 드는 시간을 0으로 만듭니다.</sub>
+  <sub>Reduce the time it takes for AI agents to understand your project to zero.</sub>
 </p>
