@@ -26,7 +26,7 @@ claude --dangerously-skip-permissions --model claude-opus-4-6 \
 
 # Opción B: Idioma del usuario (recomendado si planeas editar AGENTS.md manualmente)
 claude --dangerously-skip-permissions --model claude-opus-4-6 \
-  "HOW_TO_AGENTS.md를 읽고 이 프로젝트에 맞게 AGENTS.md를 생성하라"
+  "Lee HOW_TO_AGENTS.md y genera AGENTS.md adaptado a este proyecto"
 
 # Recomendado: --model claude-opus-4-6 (o posterior) para mejores resultados
 # Recomendado: --dangerously-skip-permissions para ejecución autónoma sin interrupciones

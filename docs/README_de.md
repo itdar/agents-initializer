@@ -2,68 +2,68 @@
 
 # ai-initializer
 
-**Automatischer Projektkontext-Generator für KI-Coding-Tools**
+**Automatischer Projektkontextgenerator für KI-Codierungswerkzeuge**
 
 > Scannt Ihr Projektverzeichnis und generiert automatisch
-> `AGENTS.md` + Wissens-/Fähigkeiten-/Rollenkontext, damit KI-Agenten sofort mit der Arbeit beginnen können.
+> `AGENTS.md` + Wissens-/Fähigkeits-/Rollenkontexte, damit KI-Agenten sofort mit der Arbeit beginnen können.
 
 ```
-Ein Befehl → Projektanalyse → AGENTS.md-Generierung → Funktioniert mit jedem KI-Tool
+Ein Befehl → Projektanalyse → AGENTS.md-Generierung → Funktioniert mit jedem KI-Werkzeug
 ```
 
 ---
 
 ## Verwendung
 
-> **Hinweis zum Token-Verbrauch** — Bei der Ersteinrichtung analysiert ein Top-Modell das gesamte Projekt und generiert mehrere Dateien (AGENTS.md, .ai-agents/context/, .ai-agents/skills/, .ai-agents/roles/). Dies kann je nach Projektgröße Zehntausende von Tokens verbrauchen. Dies ist ein einmaliger Aufwand; nachfolgende Sitzungen laden den vorgefertigten Kontext und starten sofort.
+> **Hinweis zur Token-Nutzung** — Beim ersten Einrichten analysiert ein Spitzenmodell das gesamte Projekt und generiert mehrere Dateien (AGENTS.md, .ai-agents/context/, .ai-agents/skills/, .ai-agents/roles/). Abhängig von der Projektgröße können dabei Zehntausende von Tokens verbraucht werden. Dies ist eine einmalige Kosten; nachfolgende Sitzungen laden den vorgefertigten Kontext und starten sofort.
 
 ```bash
-# 1. Lassen Sie die KI HOW_TO_AGENTS.md lesen und sie erledigt den Rest
+# 1. Die KI HOW_TO_AGENTS.md lesen lassen — sie erledigt den Rest
 
-# Option A: Englisch (empfohlen — geringerer Token-Verbrauch, optimale KI-Leistung)
+# Option A: Englisch (empfohlen — geringere Token-Kosten, optimale KI-Leistung)
 claude --dangerously-skip-permissions --model claude-opus-4-6 \
   "Read HOW_TO_AGENTS.md and generate AGENTS.md tailored to this project"
 
 # Option B: Sprache des Benutzers (empfohlen, wenn Sie AGENTS.md manuell bearbeiten möchten)
 claude --dangerously-skip-permissions --model claude-opus-4-6 \
-  "HOW_TO_AGENTS.md를 읽고 이 프로젝트에 맞게 AGENTS.md를 생성하라"
+  "Lies HOW_TO_AGENTS.md und erstelle eine auf dieses Projekt zugeschnittene AGENTS.md"
 
 # Empfohlen: --model claude-opus-4-6 (oder neuer) für beste Ergebnisse
 # Empfohlen: --dangerously-skip-permissions für ununterbrochene autonome Ausführung
 
-# 2. Beginnen Sie mit den generierten Agenten zu arbeiten
+# 2. Mit den generierten Agenten zu arbeiten beginnen
 ./ai-agency.sh
 ```
 
 ---
 
-## Warum brauchen Sie das?
+## Warum Brauchen Sie Das?
 
-### Das Problem: KI verliert bei jeder Sitzung ihr Gedächtnis
+### Das Problem: KI Verliert Jede Sitzung Ihr Gedächtnis
 
 ```
- Sitzung 1                 Sitzung 2                 Sitzung 3
+ Sitzung 1               Sitzung 2               Sitzung 3
 ┌──────────┐             ┌──────────┐             ┌──────────┐
-│ KI liest  │             │ KI liest  │             │ Wieder    │
-│ gesamte   │  Sitzung    │ gesamte   │  Sitzung    │ von vorne │
-│ Codebase  │  endet      │ Codebase  │  endet      │ anfangen  │
-│ (30 Min)  │ ──────→    │ (30 Min)  │ ──────→    │ (30 Min)  │
+│ KI liest  │             │ KI liest  │             │ Von vorne │
+│ gesamte   │  Sitzung    │ gesamte   │  Sitzung    │ anfangen  │
+│ Codebasis │  endet      │ Codebasis │  endet      │           │
+│ (30 Min.) │ ──────→    │ (30 Min.) │ ──────→    │ (30 Min.) │
 │ Beginnt   │ Gedächtnis │ Beginnt   │ Gedächtnis │ Beginnt   │
-│ zu        │ verloren!  │ zu        │ verloren!  │ zu        │
-│ arbeiten  │             │ arbeiten  │             │ arbeiten  │
+│ zu ar-    │ verloren!  │ zu ar-    │ verloren!  │ zu ar-    │
+│ beiten    │             │ beiten    │             │ beiten    │
 └──────────┘             └──────────┘             └──────────┘
 ```
 
-KI-Agenten vergessen alles, wenn eine Sitzung endet. Jedes Mal verbringen sie Zeit damit, die Projektstruktur zu verstehen, APIs zu analysieren und Konventionen zu lernen.
+KI-Agenten vergessen alles, wenn eine Sitzung endet. Jedes Mal verbringen sie Zeit damit, die Projektstruktur zu verstehen, APIs zu analysieren und Konventionen zu erlernen.
 
-| Problem | Konsequenz |
+| Problem | Folge |
 |---|---|
-| Kennt die Team-Konventionen nicht | Inkonsistenzen im Code-Stil |
-| Kennt nicht die vollständige API-Übersicht | Durchsucht jedes Mal die gesamte Codebase (Kosten +20%) |
-| Kennt keine verbotenen Aktionen | Riskante Operationen wie direkter Produktions-DB-Zugriff |
-| Kennt die Service-Abhängigkeiten nicht | Übersehene Seiteneffekte |
+| Kennt Team-Konventionen nicht | Inkonsistenter Code-Stil |
+| Kennt die vollständige API-Karte nicht | Durchsucht jedes Mal die gesamte Codebasis (Kosten +20%) |
+| Kennt verbotene Aktionen nicht | Riskante Operationen wie direkter Produktions-DB-Zugriff |
+| Kennt Service-Abhängigkeiten nicht | Übersehene Nebeneffekte |
 
-### Die Lösung: Ein "Gehirn" für die KI vorbereiten
+### Die Lösung: Ein „Gehirn" für die KI Vorausbauen
 
 ```
  Sitzungsstart
@@ -72,27 +72,27 @@ KI-Agenten vergessen alles, wenn eine Sitzung endet. Jedes Mal verbringen sie Ze
 │  Liest AGENTS.md (automatisch)                   │
 │       │                                          │
 │       ▼                                          │
-│  "Ich bin der Backend-Experte für diesen Service"│
-│  "Konventionen: Conventional Commits, TypeScript │
+│  „Ich bin der Backend-Experte für diesen Dienst" │
+│  „Konventionen: Conventional Commits, TypeScript  │
 │   strict"                                        │
-│  "Verboten: andere Services modifizieren,        │
-│   Secrets hardcoden"                             │
+│  „Verboten: andere Dienste ändern,               │
+│   Geheimnisse hardcoden"                         │
 │       │                                          │
 │       ▼                                          │
-│  Lädt .ai-agents/context/-Dateien (5 Sekunden)   │
-│  "20 APIs, 15 Entitäten, 8 Events verstanden"   │
+│  Lädt .ai-agents/context/ Dateien (5 Sekunden)   │
+│  „20 APIs, 15 Entitäten, 8 Ereignisse verstanden"│
 │       │                                          │
 │       ▼                                          │
-│  Beginnt sofort mit der Arbeit!                  │
+│  Beginnt sofort zu arbeiten!                     │
 │                                                  │
 └──────────────────────────────────────────────────┘
 ```
 
-**ai-initializer** löst dieses Problem — einmal generieren, und jedes KI-Tool versteht Ihr Projekt sofort.
+**ai-initializer** löst dieses Problem — einmal generieren, und jedes KI-Werkzeug versteht Ihr Projekt sofort.
 
 ---
 
-## Kernprinzip: 3-Schichten-Architektur
+## Grundprinzip: 3-Schichten-Architektur
 
 ```
                     Ihr Projekt
@@ -104,27 +104,27 @@ KI-Agenten vergessen alles, wenn eine Sitzung endet. Jedes Mal verbringen sie Ze
      │ AGENTS.md│  │.ai-agents│  │.ai-agents│
      │          │  │ /context/ │  │ /skills/ │
      │ Identität│  │ Wissen   │  │ Verhalten│
-     │ "Wer     │  │ "Was     │  │ "Wie     │
+     │ „Wer     │  │ „Was     │  │ „Wie     │
      │  bin     │  │  weiß    │  │  arbeite │
      │  ich?"   │  │  ich?"   │  │  ich?"   │
      │          │  │          │  │          │
-     │ + Regeln │  │ + Domäne │  │ + Deploy │
+     │ + Regeln │  │ + Domain │  │ + Deploy │
      │ + Rechte │  │ + Modelle│  │ + Review │
      │ + Pfade  │  │          │  │          │
      └──────────┘  └──────────┘  └──────────┘
-      Einstiegspunkt Wissensspeicher Workflow-Standards
+      Einstiegspkt  Wissensspeich. Workflow-Standards
 ```
 
-### 1. AGENTS.md — "Wer bin ich?"
+### 1. AGENTS.md — „Wer Bin Ich?"
 
-Die **Identitätsdatei** für den Agenten, der in jedem Verzeichnis eingesetzt wird.
+Die **Identitätsdatei** für den in jedem Verzeichnis eingesetzten Agenten.
 
 ```
 project/
 ├── AGENTS.md                  ← PM: Der Leiter, der alles koordiniert
 ├── apps/
 │   └── api/
-│       └── AGENTS.md          ← API-Experte: Nur für diesen Service verantwortlich
+│       └── AGENTS.md          ← API-Experte: Verantwortlich nur für diesen Dienst
 ├── infra/
 │   ├── AGENTS.md              ← SRE: Verwaltet die gesamte Infrastruktur
 │   └── monitoring/
@@ -133,95 +133,95 @@ project/
     └── AGENTS.md              ← Konfigurationsmanager
 ```
 
-Es funktioniert wie ein **Team-Organigramm**:
+Es funktioniert genau wie ein **Team-Organigramm**:
 - Der PM überwacht alles und verteilt Aufgaben
-- Jedes Teammitglied versteht nur seinen Bereich tiefgehend
-- Sie bearbeiten nicht direkt die Arbeit anderer Teams — sie fordern sie an
+- Jedes Teammitglied versteht nur seinen Bereich tiefgreifend
+- Sie bearbeiten die Arbeit anderer Teams nicht direkt — sie stellen Anfragen
 
-### 2. `.ai-agents/context/` — "Was weiß ich?"
+### 2. `.ai-agents/context/` — „Was Weiß Ich?"
 
-Ein Ordner, in dem **wesentliches Wissen vororganisiert ist**, damit die KI nicht jedes Mal den Code lesen muss.
+Ein Ordner, in dem **wesentliches Wissen vororganisiert** ist, damit die KI den Code nicht jedes Mal lesen muss.
 
 ```
 .ai-agents/context/
-├── domain-overview.md     ← "Dieser Service verwaltet Bestellungen..."
-├── data-model.md          ← "Es gibt Order-, Payment-, Delivery-Entitäten..."
-├── api-spec.json          ← "POST /orders, GET /orders/{id}, ..."
-└── event-spec.json        ← "Veröffentlicht das order-created-Event..."
+├── domain-overview.md     ← „Dieser Dienst verwaltet Bestellungen..."
+├── data-model.md          ← „Es gibt Order-, Payment-, Delivery-Entitäten..."
+├── api-spec.json          ← „POST /orders, GET /orders/{id}, ..."
+└── event-spec.json        ← „Veröffentlicht das order-created-Ereignis..."
 ```
 
-**Analogie:** Onboarding-Dokumentation für einen neuen Mitarbeiter. Einmal dokumentieren, und niemand muss es erneut erklären.
+**Analogie:** Einarbeitungsdokumentation für einen neuen Mitarbeiter. Einmal dokumentiert, und niemand muss es wieder erklären.
 
-### 3. `.ai-agents/skills/` — "Wie arbeite ich?"
+### 3. `.ai-agents/skills/` — „Wie Arbeite Ich?"
 
 **Standardisierte Workflow-Handbücher** für wiederkehrende Aufgaben.
 
 ```
 .ai-agents/skills/
-├── develop/SKILL.md       ← "Feature-Entwicklung: Analysieren → Entwerfen → Implementieren → Testen → PR"
-├── deploy/SKILL.md        ← "Deployment: Tag → Anfrage → Verifizieren"
-└── review/SKILL.md        ← "Review: Sicherheits-, Performance-, Test-Checkliste"
+├── develop/SKILL.md       ← „Feature-Entwicklung: Analysieren → Entwerfen → Umsetzen → Testen → PR"
+├── deploy/SKILL.md        ← „Deployment: Tag → Anfrage → Verifizieren"
+└── review/SKILL.md        ← „Review: Sicherheit, Leistung, Test-Checkliste"
 ```
 
-**Analogie:** Das Betriebshandbuch des Teams — bringt die KI dazu, Regeln zu befolgen wie "diese Checkliste vor dem Einreichen eines PR prüfen."
+**Analogie:** Das Betriebshandbuch des Teams — lässt die KI Regeln befolgen wie „diese Checkliste prüfen, bevor eine PR eingereicht wird."
 
 ---
 
-## Was man schreiben sollte und was nicht
+## Was Man Schreiben Soll und Was Nicht
 
-> ETH Zürich (2026.03): **Das Einbeziehen ableitbarer Inhalte senkt die Erfolgsrate und erhöht die Kosten um +20%**
+> ETH Zürich (2026.03): **Inferierbare Inhalte einzuschließen senkt die Erfolgsrate und erhöht die Kosten um +20%**
 
 ```
-         Das schreiben                    Das NICHT schreiben
+         Das Schreiben                   Das Nicht-Schreiben
   ┌─────────────────────────┐     ┌─────────────────────────┐
   │                         │     │                         │
-  │  "Verwende feat:-Format │     │  "Quellcode ist im      │
-  │   für Commits"          │     │   src/-Ordner"          │
+  │  „feat:-Format für      │     │  „Quellcode ist im      │
+  │   Commits verwenden"    │     │   src/-Ordner"          │
   │  KI kann das nicht      │     │  KI kann das mit ls     │
-  │  ableiten               │     │  sehen                  │
+  │  erschließen            │     │  sehen                  │
   │                         │     │                         │
-  │  "Kein direkter Push    │     │  "React ist komponenten-│
-  │   auf main"             │     │   basiert"              │
-  │  Team-Regel, nicht im   │     │  Bereits in offizieller │
-  │  Code                   │     │   Dokumentation         │
+  │  „Kein direkter Push    │     │  „React ist kompo-      │
+  │   nach main"            │     │   nentenbasiert"        │
+  │  Team-Regel, nicht      │     │  Bereits in offiz.      │
+  │  im Code                │     │   Dokumentation         │
   │                         │     │                         │
-  │  "QA-Team-Freigabe      │     │  "Diese Datei ist 100   │
-  │   vor Deploy            │     │   Zeilen lang"          │
+  │  „QA-Team-Genehmigung   │     │  „Diese Datei ist 100   │
+  │   vor dem Deployment    │     │   Zeilen lang"          │
   │   erforderlich"         │     │  KI kann sie direkt     │
   │  Prozess, nicht         │     │   lesen                 │
-  │  ableitbar              │     │                         │
+  │  erschließbar           │     │                         │
   │                         │     │                         │
   └─────────────────────────┘     └─────────────────────────┘
        In AGENTS.md schreiben         NICHT schreiben!
 ```
 
-**Ausnahme:** "Dinge, die ableitbar sind, aber jedes Mal zu aufwendig wären"
+**Ausnahme:** „Dinge, die erschlossen werden können, aber jedes Mal zu teuer sind"
 
 ```
-  z.B.: Vollständige API-Liste (20 Dateien müssen gelesen werden)
-  z.B.: Datenmodell-Beziehungen (über 10 Dateien verteilt)
-  z.B.: Inter-Service-Aufrufbeziehungen (Code + Infrastruktur müssen geprüft werden)
+  z.B.: Vollständige API-Liste (müsste 20 Dateien lesen)
+  z.B.: Datenmodell-Beziehungen (auf 10 Dateien verteilt)
+  z.B.: Inter-Service-Aufrufbeziehungen (Code + Infra prüfen)
 
   → Diese in .ai-agents/context/ vororganisieren!
-  → In AGENTS.md nur den Pfad schreiben: "hier nachschauen"
+  → In AGENTS.md nur den Pfad schreiben: „hier nachschlagen"
 ```
 
 ```
-Aufnehmen (nicht ableitbar)        .ai-agents/context/ (aufwendig ableitbar)    Ausschließen (günstig ableitbar)
-───────────────────────────        ────────────────────────────────────────      ────────────────────────────────
-Team-Konventionen                  Vollständige API-Übersicht                    Verzeichnisstruktur
-Verbotene Aktionen                 Datenmodell-Beziehungen                       Einzelne Dateiinhalte
-PR-/Commit-Formate                 Event-Pub/Sub-Spezifikationen                 Offizielle Framework-Dokumentation
-Versteckte Abhängigkeiten          Infrastruktur-Topologie                       Import-Beziehungen
+Einschließen (nicht erschließbar)   .ai-agents/context/ (kostspiel. Inferenz)   Ausschließen (billige Inferenz)
+─────────────────────────────────   ─────────────────────────────────────────   ───────────────────────────────
+Team-Konventionen                   Vollständige API-Karte                       Verzeichnisstruktur
+Verbotene Aktionen                  Datenmodell-Beziehungen                      Einzelne Dateiinhalte
+PR-/Commit-Formate                  Event-Pub/Sub-Spezifikationen                Offizielle Framework-Docs
+Versteckte Abhängigkeiten           Infrastruktur-Topologie                      Import-Beziehungen
 ```
 
 ---
 
-## Wie es funktioniert
+## Wie Es Funktioniert
 
-### Schritt 1: Projekt-Scan & Klassifizierung
+### Schritt 1: Projektscan & Klassifizierung
 
-Durchsucht Verzeichnisse bis zur Tiefe 3 und klassifiziert automatisch anhand von Dateimustern.
+Erkundet Verzeichnisse bis Tiefe 3 und klassifiziert automatisch anhand von Dateimustern.
 
 ```
 deployment.yaml + service.yaml  →  k8s-workload
@@ -232,20 +232,20 @@ Dockerfile + CI config          →  cicd
 ...19 Typen automatisch erkannt
 ```
 
-### Schritt 2: Kontext-Generierung
+### Schritt 2: Kontextgenerierung
 
-Generiert `.ai-agents/context/`-Wissensdateien durch **tatsächliche Code-Analyse** basierend auf erkannten Typen.
+Generiert `.ai-agents/context/` Wissensdateien, indem der Code **tatsächlich analysiert** wird, basierend auf den erkannten Typen.
 
 ```
-Backend-Service erkannt
-  → Routen/Controller scannen → api-spec.json generieren
-  → Entitäten/Schemas scannen → data-model.md generieren
+Backend-Dienst erkannt
+  → Routes/Controller scannen → api-spec.json generieren
+  → Entitäten/Schemata scannen → data-model.md generieren
   → Kafka-Konfiguration scannen → event-spec.json generieren
 ```
 
 ### Schritt 3: AGENTS.md-Generierung
 
-Generiert AGENTS.md für jedes Verzeichnis unter Verwendung passender Vorlagen.
+Generiert AGENTS.md für jedes Verzeichnis mithilfe passender Vorlagen.
 
 ```
 Root AGENTS.md (Globale Konventionen)
@@ -253,12 +253,12 @@ Root AGENTS.md (Globale Konventionen)
   → PR: Vorlage erforderlich, 1+ Genehmigungen
   → Branches: feature/{ticket}-{desc}
        │
-       ▼ Automatisch vererbt (nicht in Kindknoten wiederholt)
+       ▼ Automatisch geerbt (in Kindknoten nicht wiederholt)
   apps/api/AGENTS.md
-    → Überschreibt nur: "Dieser Service verwendet Python"
+    → Nur Überschreibungen: „Dieser Dienst verwendet Python"
 ```
 
-Globale Regeln nutzen ein **Vererbungsmuster** — an einer Stelle schreiben, und es gilt automatisch für alle nachfolgenden Ebenen.
+Globale Regeln verwenden ein **Vererbungsmuster** — einmal schreiben, und es gilt automatisch nachgelagert.
 
 ```
 Root AGENTS.md ──────────────────────────────────────────
@@ -267,38 +267,38 @@ Root AGENTS.md ─────────────────────�
 │  - PR: Vorlage erforderlich, mindestens 1 Reviewer
 │  - Branch: feature/{ticket}-{desc}
 │
-│     Automatisch vererbt            Automatisch vererbt
+│     Automatisch geerbt              Automatisch geerbt
 │     ┌──────────────────┐       ┌──────────────────┐
 │     ▼                  │       ▼                  │
 │  apps/api/AGENTS.md    │    infra/AGENTS.md       │
 │  (Nur zusätzliche      │    (Nur zusätzliche      │
 │   Regeln angegeben)    │     Regeln angegeben)    │
-│  "Dieser Service       │    "Bei Änderung von     │
-│   verwendet Python"    │     Helm-Values,         │
-│                        │     erst fragen"         │
-└─────────────────────────┴──────────────────────────
+│  „Dieser Dienst        │    „Bei Helm-values-     │
+│   verwendet Python"    │     Änderungen: Erst     │
+│                        │     fragen"              │
+└────────────────────────┴──────────────────────────
 ```
 
 **Vorteile:**
-- Commit-Regeln ändern? → Nur das Root ändern
-- Neuen Service hinzufügen? → Globale Regeln gelten automatisch
-- Andere Regeln für einen bestimmten Service nötig? → In dessen AGENTS.md überschreiben
+- Commit-Regeln ändern? → Nur die Root-Datei anpassen
+- Neuen Dienst hinzufügen? → Globale Regeln gelten automatisch
+- Andere Regeln für einen bestimmten Dienst? → In der AGENTS.md dieses Dienstes überschreiben
 
-### Schritt 4: Vendor-spezifischer Bootstrap
+### Schritt 4: Anbieterspezifisches Bootstrap
 
-Fügt Brücken zu vendor-spezifischen Konfigurationen hinzu, damit **alle KI-Tools** die generierte AGENTS.md lesen.
+Fügt Brücken zu anbieterspezifischen Konfigurationen hinzu, damit **alle KI-Werkzeuge** die generierte AGENTS.md lesen.
 
 ```
 ┌──────────────┐     ┌─────────────┐     ┌─────────────┐
 │ Claude Code  │     │   Cursor    │     │   Codex     │
 │  CLAUDE.md   │     │  .mdc rules │     │  AGENTS.md  │
 │      ↓       │     │      ↓      │     │  (nativ)    │
-│ "lies        │     │ "lies       │     │      ✓      │
-│  AGENTS.md"  │     │  AGENTS.md" │     │             │
+│ „AGENTS.md   │     │ „AGENTS.md  │     │      ✓      │
+│  lesen"      │     │  lesen"     │     │             │
 └──────┬───────┘     └──────┬──────┘     └─────────────┘
        └──────────┬─────────┘
                   ▼
-           AGENTS.md (einzige Quelle der Wahrheit)
+           AGENTS.md (einzige Wahrheitsquelle)
                   │
         ┌─────────┼─────────┐
         ▼         ▼         ▼
@@ -306,20 +306,20 @@ Fügt Brücken zu vendor-spezifischen Konfigurationen hinzu, damit **alle KI-Too
    context/     skills/      roles/
 ```
 
-> **Prinzip:** Bootstrap-Dateien werden nur für bereits genutzte Vendor-Tools generiert. Konfigurationsdateien für ungenutzte Tools werden niemals erstellt.
+> **Grundsatz:** Bootstrap-Dateien werden nur für bereits verwendete Anbieter generiert. Konfigurationsdateien für nicht verwendete Werkzeuge werden niemals erstellt.
 
 ---
 
-## Vendor-Kompatibilität
+## Anbieterkompatibilität
 
-| Tool | Liest AGENTS.md automatisch | Bootstrap |
+| Werkzeug | Liest AGENTS.md automatisch | Bootstrap |
 |---|---|---|
-| **OpenAI Codex** | Ja (nativ) | Nicht erforderlich |
+| **OpenAI Codex** | Ja (nativ) | Nicht benötigt |
 | **Claude Code** | Teilweise (Fallback) | Fügt Direktive zu `CLAUDE.md` hinzu |
 | **Cursor** | Nein | Fügt `.mdc` zu `.cursor/rules/` hinzu |
 | **GitHub Copilot** | Nein | Generiert `.github/copilot-instructions.md` |
 | **Windsurf** | Nein | Fügt Direktive zu `.windsurfrules` hinzu |
-| **Aider** | Ja | Fügt Read zu `.aider.conf.yml` hinzu |
+| **Aider** | Ja | Fügt read zu `.aider.conf.yml` hinzu |
 
 Bootstraps automatisch generieren:
 ```bash
@@ -332,21 +332,21 @@ bash scripts/sync-ai-rules.sh
 
 ```
 project-root/
-├── AGENTS.md                          # PM-Agent (Gesamtkoordination)
+├── AGENTS.md                          # PM-Agent (Gesamtorchestrierung)
 ├── .ai-agents/
-│   ├── context/                       # Wissensdateien (bei Sitzungsstart geladen)
+│   ├── context/                       # Wissensdateien (beim Sitzungsstart geladen)
 │   │   ├── domain-overview.md         #   Geschäftsdomäne, Richtlinien, Einschränkungen
 │   │   ├── data-model.md             #   Entitätsdefinitionen, Beziehungen, Zustandsübergänge
-│   │   ├── api-spec.json              #   API-Übersicht (JSON DSL, 3x Token-Ersparnis)
-│   │   ├── event-spec.json            #   Kafka/MQ Event-Spezifikationen
-│   │   ├── infra-spec.md              #   Helm Charts, Netzwerk, Deployment-Reihenfolge
-│   │   └── external-integration.md    #   Externe APIs, Authentifizierung, Rate Limits
+│   │   ├── api-spec.json              #   API-Karte (JSON-DSL, 3-fache Token-Einsparung)
+│   │   ├── event-spec.json            #   Kafka/MQ-Ereignisspezifikationen
+│   │   ├── infra-spec.md              #   Helm-Charts, Netzwerk, Deployment-Reihenfolge
+│   │   └── external-integration.md    #   Externe APIs, Auth, Rate-Limits
 │   ├── skills/                        # Verhaltens-Workflows (bei Bedarf geladen)
-│   │   ├── develop/SKILL.md           #   Entwicklung: Analysieren → Entwerfen → Implementieren → Testen → PR
+│   │   ├── develop/SKILL.md           #   Entwicklung: analysieren → entwerfen → umsetzen → testen → PR
 │   │   ├── deploy/SKILL.md            #   Deployment: Tag → Deploy-Anfrage → Verifizieren
 │   │   ├── review/SKILL.md            #   Review: Checklisten-basiert
 │   │   ├── hotfix/SKILL.md            #   Notfall-Fix-Workflow
-│   │   └── context-update/SKILL.md    #   Kontextdatei-Aktualisierungsprozedur
+│   │   └── context-update/SKILL.md    #   Prozedur zur Kontextdatei-Aktualisierung
 │   └── roles/                         # Rollendefinitionen (rollenspezifische Kontexttiefe)
 │       ├── pm.md                      #   Projektmanager
 │       ├── backend.md                 #   Backend-Entwickler
@@ -355,7 +355,7 @@ project-root/
 │       └── reviewer.md               #   Code-Reviewer
 │
 ├── apps/
-│   ├── api/AGENTS.md                  # Service-spezifische Agenten
+│   ├── api/AGENTS.md                  # Dienstspezifische Agenten
 │   └── web/AGENTS.md
 └── infra/
     └── helm/AGENTS.md
@@ -363,33 +363,33 @@ project-root/
 
 ---
 
-## Sitzungs-Launcher
+## Sitzungsstarter
 
-Sobald alle Agenten eingerichtet sind, wählen Sie den gewünschten Agenten und starten Sie sofort eine Sitzung.
+Sobald alle Agenten eingerichtet sind, den gewünschten Agenten auswählen und sofort eine Sitzung starten.
 
 ```bash
 $ ./ai-agency.sh
 
-=== KI-Agenten-Sitzungen ===
-Gefunden: 8 Agent(en)
+=== AI Agent Sessions ===
+Found: 8 agent(s)
 
   1) [PM] project-root
   2) api-service
   3) monitoring
   ...
 
-Agent auswählen (Nummer): 2
+Select agent (number): 2
 
-=== KI-Tool ===
+=== AI Tool ===
   1) claude
   2) codex
   3) print
 
-Tool auswählen: 1
+Select tool: 1
 
-→ Sitzung im api-service-Verzeichnis gestartet
-→ Agent lädt automatisch AGENTS.md und .ai-agents/context/
-→ Sofort arbeitsbereit!
+→ Session started in the api-service directory
+→ Agent automatically loads AGENTS.md and .ai-agents/context/
+→ Ready to work immediately!
 ```
 
 **Parallele Ausführung (tmux):**
@@ -397,21 +397,21 @@ Tool auswählen: 1
 ```bash
 $ ./ai-agency.sh --multi
 
-Agenten auswählen: 1,2,3   # PM + API + Monitoring gleichzeitig ausführen
+Select agents: 1,2,3   # PM + API + Monitoring gleichzeitig ausführen
 
-→ 3 tmux-Sitzungen geöffnet
-→ Verschiedene Agenten arbeiten unabhängig in jedem Fenster
-→ Fenster wechseln mit Ctrl+B N
+→ 3 tmux sessions open
+→ Different agents work independently in each pane
+→ Switch panes with Ctrl+B N
 ```
 
 ---
 
 ## Token-Optimierung
 
-| Format | Token-Anzahl | Anmerkungen |
+| Format | Token-Anzahl | Hinweise |
 |---|---|---|
-| API-Beschreibung in natürlicher Sprache | ~200 Tokens | |
-| JSON DSL | ~70 Tokens | **3x Ersparnis** |
+| Natürlichsprachige API-Beschreibung | ~200 Tokens | |
+| JSON-DSL | ~70 Tokens | **3-fache Einsparung** |
 
 **api-spec.json Beispiel:**
 ```json
@@ -426,41 +426,41 @@ Agenten auswählen: 1,2,3   # PM + API + Monitoring gleichzeitig ausführen
 }
 ```
 
-**AGENTS.md-Ziel:** Unter **300 Tokens** nach Substitution
+**AGENTS.md Ziel:** Unter **300 Tokens** nach Substitution
 
 ---
 
-## Sitzungswiederherstellungs-Protokoll
+## Sitzungswiederherstellungsprotokoll
 
 ```
 Sitzungsstart:
-  1. AGENTS.md lesen (die meisten KI-Tools tun dies automatisch)
-  2. Kontextdatei-Pfaden folgen, um .ai-agents/context/ zu laden
-  3. .ai-agents/context/current-work.md prüfen (laufende Arbeit)
+  1. AGENTS.md lesen (die meisten KI-Werkzeuge tun das automatisch)
+  2. Kontextdateipfaden folgen und .ai-agents/context/ laden
+  3. .ai-agents/context/current-work.md prüfen (laufende Arbeiten)
   4. git log --oneline -10 (aktuelle Änderungen verstehen)
 
 Sitzungsende:
-  1. Laufende Arbeit → In current-work.md festhalten
+  1. Laufende Arbeiten → In current-work.md dokumentieren
   2. Neu erlerntes Domänenwissen → Kontextdateien aktualisieren
   3. Unvollständige TODOs → Explizit festhalten
 ```
 
 ---
 
-## Kontext-Wartung
+## Kontextpflege
 
-Wenn sich der Code ändert, müssen `.ai-agents/context/`-Dateien entsprechend aktualisiert werden.
+Wenn sich der Code ändert, müssen die `.ai-agents/context/`-Dateien entsprechend aktualisiert werden.
 
 ```
-API hinzugefügt/geändert/entfernt  →  api-spec.json aktualisieren
-DB-Schema geändert                  →  data-model.md aktualisieren
-Event-Spezifikation geändert        →  event-spec.json aktualisieren
-Geschäftsrichtlinie geändert        →  domain-overview.md aktualisieren
-Externe Integration geändert        →  external-integration.md aktualisieren
-Infrastruktur-Konfiguration geändert →  infra-spec.md aktualisieren
+API hinzugefügt/geändert/entfernt     →  api-spec.json aktualisieren
+DB-Schema geändert                    →  data-model.md aktualisieren
+Ereignisspezifikation geändert        →  event-spec.json aktualisieren
+Geschäftsrichtlinie geändert          →  domain-overview.md aktualisieren
+Externe Integration geändert          →  external-integration.md aktualisieren
+Infrastrukturkonfiguration geändert   →  infra-spec.md aktualisieren
 ```
 
-> Wird die Aktualisierung versäumt, arbeitet die nächste Sitzung **mit veraltetem Kontext**.
+> Wird die Aktualisierung versäumt, arbeitet die nächste Sitzung mit **veraltetem Kontext**.
 
 ---
 
@@ -476,14 +476,14 @@ Infrastruktur-Konfiguration geändert →  infra-spec.md aktualisieren
 │  KI analysiert die Projektstruktur                               │
 │       │                                                          │
 │       ▼                                                          │
-│  Erstellt AGENTS.md in jedem        Organisiert Wissen in         │
-│  Verzeichnis                        .ai-agents/context/           │
-│  (Agenten-Identität + Regeln        (API-, Modell-, Event-Spez.) │
-│   + Berechtigungen)                                              │
+│  Erstellt AGENTS.md in jedem         Organisiert Wissen in       │
+│  Verzeichnis                         .ai-agents/context/         │
+│  (Agenten-Identität + Regeln         (API-, Modell-,             │
+│   + Berechtigungen)                   Ereignisspezifikationen)   │
 │                                                                  │
-│  Definiert Workflows in             Definiert Rollen in           │
-│  .ai-agents/skills/                 .ai-agents/roles/             │
-│  (Entwicklungs-, Deploy-,           (Backend, Frontend, SRE)      │
+│  Definiert Workflows in              Definiert Rollen in         │
+│  .ai-agents/skills/                  .ai-agents/roles/           │
+│  (Entwicklungs-, Deploy-,            (Backend, Frontend, SRE)    │
 │   Review-Prozeduren)                                             │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
@@ -495,14 +495,14 @@ Infrastruktur-Konfiguration geändert →  infra-spec.md aktualisieren
 │  ./ai-agency.sh ausführen                                        │
 │       │                                                          │
 │       ▼                                                          │
-│  Agent auswählen (PM? Backend? SRE?)                             │
+│  Agenten auswählen (PM? Backend? SRE?)                           │
 │       │                                                          │
 │       ▼                                                          │
-│  KI-Tool auswählen (Claude? Codex? Cursor?)                      │
+│  KI-Werkzeug auswählen (Claude? Codex? Cursor?)                  │
 │       │                                                          │
 │       ▼                                                          │
-│  Sitzung startet → AGENTS.md automatisch geladen →                │
-│  .ai-agents/context/ geladen → Arbeiten!                         │
+│  Sitzung startet → AGENTS.md auto-geladen → .ai-agents/context/  │
+│  geladen → Arbeiten!                                             │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
                               │
@@ -511,17 +511,17 @@ Infrastruktur-Konfiguration geändert →  infra-spec.md aktualisieren
 │  3. Laufende Wartung                                             │
 │                                                                  │
 │  Bei Code-Änderungen:                                            │
-│    - KI aktualisiert automatisch .ai-agents/context/             │
-│    - Oder ein Mensch weist an: "Das ist wichtig, festhalten"     │
+│    - KI aktualisiert .ai-agents/context/ automatisch             │
+│    - Oder ein Mensch weist an: „Das ist wichtig, dokumentiere es"│
 │                                                                  │
-│  Bei Hinzufügen eines neuen Services:                            │
-│    - HOW_TO_AGENTS.md erneut ausführen → Neue AGENTS.md          │
+│  Beim Hinzufügen eines neuen Dienstes:                           │
+│    - HOW_TO_AGENTS.md erneut ausführen → Neue AGENTS.md wird     │
 │      automatisch generiert                                       │
-│    - Globale Regeln werden automatisch vererbt                   │
+│    - Globale Regeln werden automatisch geerbt                    │
 │                                                                  │
 │  Wenn die KI Fehler macht:                                       │
-│    - "Analysiere das nochmal" → Hinweise geben → Sobald          │
-│      verstanden, .ai-agents/context/ aktualisieren               │
+│    - „Das nochmal analysieren" → Hinweise geben → Wenn verstanden,│
+│      .ai-agents/context/ aktualisieren                           │
 │    - Diese Feedback-Schleife verbessert die Kontextqualität      │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
@@ -532,20 +532,20 @@ Infrastruktur-Konfiguration geändert →  infra-spec.md aktualisieren
 ## Analogie: Traditionelles Team vs. KI-Agenten-Team
 
 ```
-              Traditionelles Dev-Team     KI-Agenten-Team
-              ────────────────────────    ──────────────────
- Leiter       PM (Mensch)                 Root AGENTS.md (PM-Agent)
- Mitglieder   N Entwickler               AGENTS.md in jedem Verzeichnis
- Onboarding   Confluence/Notion          .ai-agents/context/
- Handbücher   Team-Wiki                  .ai-agents/skills/
- Rollen-Def.  Stellenbeschr./R&R-Doks    .ai-agents/roles/
- Team-Regeln  Team-Konventionsdokumente  Globale Konventionen (vererbt)
- Arbeitsbeg.  Im Büro ankommen           Sitzung startet → AGENTS.md geladen
- Arbeitsende  Gehen (Gedächtnis bleibt)  Sitzung endet (Gedächtnis verloren!)
- Nächster Tag Gedächtnis intakt          .ai-agents/context/ geladen (Gedächtnis wiederhergestellt)
+              Traditionelles Dev-Team    KI-Agenten-Team
+              ──────────────────────     ──────────────────────
+ Leiter       PM (Mensch)                Root AGENTS.md (PM-Agent)
+ Mitglieder   N Entwickler              AGENTS.md in jedem Verzeichnis
+ Einarbeitung Confluence/Notion         .ai-agents/context/
+ Handbücher   Team-Wiki                 .ai-agents/skills/
+ Rollendefs.  Stellenbeschreibungen     .ai-agents/roles/
+ Teamregeln   Team-Konventionsdoks.     Globale Konventionen (geerbt)
+ Arbeitsanfang Im Büro ankommen         Sitzung startet → AGENTS.md geladen
+ Arbeitsende  Gehen (Gedächtnis bleibt) Sitzung endet (Gedächtnis verloren!)
+ Nächster Tag Gedächtnis intakt         .ai-agents/context/ geladen (Gedächtnis wiederhergestellt)
 ```
 
-**Wichtiger Unterschied:** Menschen behalten ihr Gedächtnis nach der Arbeit, aber KI vergisst jedes Mal alles.
+**Wesentlicher Unterschied:** Menschen behalten ihr Gedächtnis nach der Arbeit, aber KI vergisst jedes Mal alles.
 Deshalb existiert `.ai-agents/context/` — es dient als **Langzeitgedächtnis** der KI.
 
 ---
@@ -553,25 +553,24 @@ Deshalb existiert `.ai-agents/context/` — es dient als **Langzeitgedächtnis**
 ## Einführungs-Checkliste
 
 ```
-Phase 1 (Grundlagen)           Phase 2 (Kontext)                Phase 3 (Betrieb)
-────────────────────           ──────────────────               ──────────────────
-☐ AGENTS.md generieren         ☐ .ai-agents/context/ erstellen  ☐ .ai-agents/roles/ definieren
-☐ Build/Test-Befehle erfassen  ☐ domain-overview.md             ☐ Multi-Agenten-Sitzungen starten
-☐ Konventionen & Regeln        ☐ api-spec.json (DSL)            ☐ .ai-agents/skills/-Workflows
-  erfassen                     ☐ data-model.md                  ☐ Iterative Feedback-Schleife
-☐ Globale Konventionen         ☐ Wartungsregeln einrichten
-☐ Vendor-Bootstraps
+Phase 1 (Grundlagen)              Phase 2 (Kontext)                  Phase 3 (Betrieb)
+────────────────────              ─────────────────                  ─────────────────
+☐ AGENTS.md generieren            ☐ .ai-agents/context/ erstellen    ☐ .ai-agents/roles/ definieren
+☐ Build-/Test-Befehle festhalten  ☐ domain-overview.md               ☐ Multi-Agenten-Sitzungen starten
+☐ Konventionen & Regeln festhalten☐ api-spec.json (DSL)              ☐ .ai-agents/skills/ Workflows
+☐ Globale Konventionen            ☐ data-model.md                    ☐ Iterative Feedback-Schleife
+☐ Anbieter-Bootstraps             ☐ Wartungsregeln einrichten
 ```
 
 ---
 
-## Ergebnisdateien
+## Ergebnisse
 
 | Datei | Zielgruppe | Zweck |
 |---|---|---|
-| `HOW_TO_AGENTS.md` | KI | Meta-Anleitung, die Agenten lesen und ausführen |
-| `README.md` | Mensch | Dieses Dokument — ein Leitfaden für menschliches Verständnis |
-| `ai-agency.sh` | Mensch | Agentenauswahl → KI-Sitzungs-Launcher |
+| `HOW_TO_AGENTS.md` | KI | Meta-Instruktionshandbuch, das Agenten lesen und ausführen |
+| `README.md` | Mensch | Dieses Dokument — ein Leitfaden für das menschliche Verständnis |
+| `ai-agency.sh` | Mensch | Agentenauswahl → KI-Sitzungsstarter |
 | `AGENTS.md` (jedes Verzeichnis) | KI | Verzeichnisspezifische Agenten-Identität + Regeln |
 | `.ai-agents/context/*.md/json` | KI | Vororganisiertes Domänenwissen |
 | `.ai-agents/skills/*/SKILL.md` | KI | Standardisierte Arbeits-Workflows |
@@ -582,8 +581,8 @@ Phase 1 (Grundlagen)           Phase 2 (Kontext)                Phase 3 (Betrieb
 ## Referenzen
 
 - [Kurly OMS Team AI Workflow](https://helloworld.kurly.com/blog/oms-claude-ai-workflow/) — Inspiration für das Kontextdesign dieses Systems
-- [AGENTS.md Standard](https://agents.md/) — Vendor-neutraler Agenten-Anweisungsstandard
-- [ETH Zürich Forschung](https://www.infoq.com/news/2026/03/agents-context-file-value-review/) — "Nur dokumentieren, was nicht abgeleitet werden kann"
+- [AGENTS.md Standard](https://agents.md/) — Anbieter-neutraler Agenten-Instruktionsstandard
+- [ETH Zürich Forschung](https://www.infoq.com/news/2026/03/agents-context-file-value-review/) — „Nur dokumentieren, was nicht erschlossen werden kann"
 
 ---
 
@@ -594,5 +593,5 @@ MIT
 ---
 
 <p align="center">
-  <sub>Reduzieren Sie die Zeit, die KI-Agenten benötigen, um Ihr Projekt zu verstehen, auf null.</sub>
+  <sub>Reduzieren Sie die Zeit, die KI-Agenten zum Verstehen Ihres Projekts benötigen, auf null.</sub>
 </p>

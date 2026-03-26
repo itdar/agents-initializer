@@ -2,36 +2,36 @@
 
 # ai-initializer
 
-**Generateur automatique de contexte projet pour les outils de codage IA**
+**Générateur automatique de contexte de projet pour les outils de codage IA**
 
-> Analyse votre repertoire de projet et genere automatiquement
-> `AGENTS.md` + contexte de connaissances/competences/roles pour que les agents IA puissent commencer a travailler immediatement.
+> Analyse votre répertoire de projet et génère automatiquement
+> `AGENTS.md` + le contexte de connaissances/compétences/rôles afin que les agents IA puissent commencer à travailler immédiatement.
 
 ```
-Une commande → Analyse du projet → Generation d'AGENTS.md → Fonctionne avec n'importe quel outil IA
+Une commande → Analyse du projet → Génération de AGENTS.md → Fonctionne avec n'importe quel outil IA
 ```
 
 ---
 
 ## Utilisation
 
-> **Avis sur la consommation de tokens** — Lors de la configuration initiale, un modele de premier rang analyse l'ensemble du projet et genere plusieurs fichiers (AGENTS.md, .ai-agents/context/, .ai-agents/skills/, .ai-agents/roles/). Cela peut consommer des dizaines de milliers de tokens selon la taille du projet. C'est un cout unique ; les sessions suivantes chargent le contexte pre-construit et demarrent instantanement.
+> **Avis sur la consommation de tokens** — Lors de la configuration initiale, un modèle de premier plan analyse l'intégralité du projet et génère plusieurs fichiers (AGENTS.md, .ai-agents/context/, .ai-agents/skills/, .ai-agents/roles/). Cela peut consommer des dizaines de milliers de tokens selon la taille du projet. Il s'agit d'un coût unique ; les sessions suivantes chargent le contexte pré-construit et démarrent instantanément.
 
 ```bash
-# 1. Faites lire HOW_TO_AGENTS.md a l'IA et elle s'occupe du reste
+# 1. Demandez à l'IA de lire HOW_TO_AGENTS.md et elle s'occupe du reste
 
-# Option A : Anglais (recommande — cout en tokens reduit, performance IA optimale)
+# Option A : Anglais (recommandé — coût en tokens plus faible, performances IA optimales)
 claude --dangerously-skip-permissions --model claude-opus-4-6 \
   "Read HOW_TO_AGENTS.md and generate AGENTS.md tailored to this project"
 
-# Option B : Langue de l'utilisateur (recommande si vous prevoyez de modifier manuellement AGENTS.md)
+# Option B : Langue de l'utilisateur (recommandé si vous prévoyez de modifier AGENTS.md manuellement)
 claude --dangerously-skip-permissions --model claude-opus-4-6 \
-  "HOW_TO_AGENTS.md를 읽고 이 프로젝트에 맞게 AGENTS.md를 생성하라"
+  "Lis HOW_TO_AGENTS.md et génère un AGENTS.md adapté à ce projet"
 
-# Recommande : --model claude-opus-4-6 (ou ulterieur) pour de meilleurs resultats
-# Recommande : --dangerously-skip-permissions pour une execution autonome sans interruption
+# Recommandé : --model claude-opus-4-6 (ou ultérieur) pour de meilleurs résultats
+# Recommandé : --dangerously-skip-permissions pour une exécution autonome sans interruption
 
-# 2. Commencez a travailler avec les agents generes
+# 2. Commencez à travailler avec les agents générés
 ./ai-agency.sh
 ```
 
@@ -39,65 +39,63 @@ claude --dangerously-skip-permissions --model claude-opus-4-6 \
 
 ## Pourquoi en avez-vous besoin ?
 
-### Le probleme : l'IA perd sa memoire a chaque session
+### Le problème : l'IA perd sa mémoire à chaque session
 
 ```
  Session 1                  Session 2                  Session 3
 ┌──────────┐             ┌──────────┐             ┌──────────┐
-│ L'IA lit  │             │ L'IA lit  │             │ Repartir  │
-│ tout le   │  Session    │ tout le   │  Session    │ de        │
-│ code      │  terminee   │ code      │  terminee   │ zero      │
-│ (30 min)  │ ──────→    │ (30 min)  │ ──────→    │ encore    │
-│ Commence  │ Memoire    │ Commence  │ Memoire    │ (30 min)  │
-│ a         │ perdue !   │ a         │ perdue !   │ Commence  │
-│ travailler│             │ travailler│             │ a         │
-└──────────┘             └──────────┘             │ travailler│
-                                                   └──────────┘
+│ L'IA lit  │             │ L'IA lit  │             │ Repart   │
+│ tout le   │  Session    │ tout le   │  Session    │ de zéro  │
+│ code      │  terminée   │ code      │  terminée   │          │
+│ (30 min)  │ ──────→    │ (30 min)  │ ──────→    │ (30 min) │
+│ Commence  │ Mémoire    │ Commence  │ Mémoire    │ Commence  │
+│ à         │ perdue !   │ à         │ perdue !   │ à         │
+│ travailler│             │ travailler│             │ travailler│
+└──────────┘             └──────────┘             └──────────┘
 ```
 
-Les agents IA oublient tout quand une session se termine. A chaque fois, ils passent du temps a comprendre la structure du projet, analyser les API et apprendre les conventions.
+Les agents IA oublient tout à la fin d'une session. À chaque fois, ils passent du temps à comprendre la structure du projet, analyser les API et apprendre les conventions.
 
-| Probleme | Consequence |
+| Problème | Conséquence |
 |---|---|
-| Ne connait pas les conventions de l'equipe | Incoherences de style de code |
-| Ne connait pas la carte complete des API | Explore tout le code a chaque fois (cout +20%) |
-| Ne connait pas les actions interdites | Operations risquees comme l'acces direct a la base de production |
-| Ne connait pas les dependances entre services | Effets de bord manques |
+| Ne connaît pas les conventions de l'équipe | Incohérences dans le style de code |
+| Ne connaît pas la carte complète des API | Explore toute la base de code à chaque fois (coût +20%) |
+| Ne connaît pas les actions interdites | Opérations risquées comme l'accès direct à la DB de production |
+| Ne connaît pas les dépendances entre services | Effets secondaires manqués |
 
-### La solution : pre-construire un « cerveau » pour l'IA
+### La solution : pré-construire un « cerveau » pour l'IA
 
 ```
- Demarrage de session
+ Début de session
 ┌──────────────────────────────────────────────────┐
 │                                                  │
-│  Lit AGENTS.md (automatiquement)                 │
+│  Lit AGENTS.md (automatique)                     │
 │       │                                          │
 │       ▼                                          │
-│  "Je suis l'expert backend de ce service"        │
-│  "Conventions : Conventional Commits, TypeScript  │
-│   strict"                                        │
-│  "Interdit : modifier d'autres services,         │
-│   coder en dur les secrets"                      │
+│  « Je suis l'expert backend de ce service »      │
+│  « Conventions : Conventional Commits,           │
+│   TypeScript strict »                            │
+│  « Interdit : modifier d'autres services,        │
+│   coder des secrets en dur »                     │
 │       │                                          │
 │       ▼                                          │
-│  Charge les fichiers .ai-agents/context/         │
-│  (5 secondes)                                    │
-│  "20 API, 15 entites, 8 evenements compris"      │
+│  Charge les fichiers .ai-agents/context/ (5 s)   │
+│  « 20 API, 15 entités, 8 événements compris »    │
 │       │                                          │
 │       ▼                                          │
-│  Commence a travailler immediatement !           │
+│  Commence à travailler immédiatement !           │
 │                                                  │
 └──────────────────────────────────────────────────┘
 ```
 
-**ai-initializer** resout ce probleme — generez une seule fois, et n'importe quel outil IA comprend votre projet instantanement.
+**ai-initializer** résout ce problème — générez une fois, et n'importe quel outil IA comprend instantanément votre projet.
 
 ---
 
-## Principe fondamental : architecture a 3 couches
+## Principe fondamental : architecture à 3 couches
 
 ```
-                    Votre Projet
+                    Votre projet
                          │
             ┌────────────┼────────────┐
             ▼            ▼            ▼
@@ -105,127 +103,125 @@ Les agents IA oublient tout quand une session se termine. A chaque fois, ils pas
      ┌──────────┐  ┌──────────┐  ┌──────────┐
      │ AGENTS.md│  │.ai-agents│  │.ai-agents│
      │          │  │ /context/ │  │ /skills/ │
-     │ Identite │  │Connais-  │  │Comporte- │
-     │ "Qui     │  │ sances   │  │ ment     │
-     │  suis-   │  │ "Que     │  │ "Comment │
-     │  je ?"   │  │  sais-   │  │  est-ce  │
-     │          │  │  je ?"   │  │  que je  │
-     │ + Regles │  │          │  │  travail-│
-     │ + Perms  │  │ + Domaine│  │  le ?"   │
-     │ + Chemins│  │ + Modeles│  │ + Deploy │
-     └──────────┘  └──────────┘  │ + Revue  │
-      Point        Stockage de   └──────────┘
-      d'entree     memoire       Standards de
-                                  flux de travail
+     │ Identité │  │ Connais- │  │Comportem.│
+     │ « Qui    │  │ sances   │  │ « Comment│
+     │  suis-je?│  │ « Que    │  │  est-ce  │
+     │        » │  │  sais-je?│  │  que je  │
+     │ + Règles │  │        » │  │  travaille│
+     │ + Perms  │  │ + Domaine│  │        » │
+     │ + Chemins│  │ + Modèles│  │ + Déploie│
+     └──────────┘  └──────────┘  └──────────┘
+      Point d'entrée  Mémoire     Standards de travail
 ```
 
 ### 1. AGENTS.md — « Qui suis-je ? »
 
-Le **fichier d'identite** de l'agent deploye dans chaque repertoire.
+Le **fichier d'identité** de l'agent déployé dans chaque répertoire.
 
 ```
 project/
-├── AGENTS.md                  ← PM : Le leader qui coordonne tout
+├── AGENTS.md                  ← PM : le chef qui coordonne tout
 ├── apps/
 │   └── api/
-│       └── AGENTS.md          ← Expert API : Responsable de ce service uniquement
+│       └── AGENTS.md          ← Expert API : responsable de ce service uniquement
 ├── infra/
-│   ├── AGENTS.md              ← SRE : Gere toute l'infrastructure
+│   ├── AGENTS.md              ← SRE : gère toute l'infrastructure
 │   └── monitoring/
-│       └── AGENTS.md          ← Specialiste monitoring
+│       └── AGENTS.md          ← Spécialiste du monitoring
 └── configs/
     └── AGENTS.md              ← Gestionnaire de configuration
 ```
 
-Cela fonctionne exactement comme un **organigramme d'equipe** :
-- Le PM supervise tout et distribue les taches
-- Chaque membre de l'equipe comprend en profondeur uniquement son domaine
-- Ils ne traitent pas directement le travail des autres equipes — ils le demandent
+Cela fonctionne exactement comme un **organigramme d'équipe** :
+- Le PM supervise tout et distribue les tâches
+- Chaque membre de l'équipe comprend profondément uniquement son domaine
+- Ils ne gèrent pas directement le travail des autres équipes — ils le demandent
 
 ### 2. `.ai-agents/context/` — « Que sais-je ? »
 
-Un dossier ou **les connaissances essentielles sont pre-organisees** pour que l'IA n'ait pas a lire le code a chaque fois.
+Un dossier où les **connaissances essentielles sont pré-organisées** afin que l'IA n'ait pas à lire le code à chaque fois.
 
 ```
 .ai-agents/context/
-├── domain-overview.md     ← "Ce service gere la gestion des commandes..."
-├── data-model.md          ← "Il y a les entites Order, Payment, Delivery..."
-├── api-spec.json          ← "POST /orders, GET /orders/{id}, ..."
-└── event-spec.json        ← "Publie l'evenement order-created..."
+├── domain-overview.md     ← « Ce service gère la gestion des commandes... »
+├── data-model.md          ← « Il y a les entités Order, Payment, Delivery... »
+├── api-spec.json          ← « POST /orders, GET /orders/{id}, ... »
+└── event-spec.json        ← « Publie l'événement order-created... »
 ```
 
-**Analogie :** Documentation d'integration pour un nouvel employe. Documentez une fois, et personne n'a besoin de reexpliquer.
+**Analogie :** Documentation d'intégration pour un nouvel employé. Documentez-le une fois et personne n'a plus besoin de l'expliquer.
 
 ### 3. `.ai-agents/skills/` — « Comment est-ce que je travaille ? »
 
-**Manuels de flux de travail standardises** pour les taches repetitives.
+**Manuels de flux de travail standardisés** pour les tâches répétitives.
 
 ```
 .ai-agents/skills/
-├── develop/SKILL.md       ← "Dev de fonctionnalite : Analyser → Concevoir → Implementer → Tester → PR"
-├── deploy/SKILL.md        ← "Deploiement : Tag → Demande → Verification"
-└── review/SKILL.md        ← "Revue : Checklist securite, performance, tests"
+├── develop/SKILL.md       ← « Dev fonctionnalité : Analyser → Concevoir → Implémenter → Tester → PR »
+├── deploy/SKILL.md        ← « Déploiement : Tag → Demande → Vérification »
+└── review/SKILL.md        ← « Revue : Sécurité, Performance, checklist de tests »
 ```
 
-**Analogie :** Le manuel d'operations de l'equipe — fait suivre a l'IA des regles comme « verifier cette checklist avant de soumettre une PR ».
+**Analogie :** Le manuel opérationnel de l'équipe — amène l'IA à respecter des règles comme « vérifier cette checklist avant de soumettre une PR ».
 
 ---
 
-## Quoi ecrire et quoi ne pas ecrire
+## Ce qu'il faut écrire et ce qu'il ne faut pas écrire
 
-> ETH Zurich (2026.03) : **Inclure du contenu inferable reduit les taux de reussite et augmente le cout de +20%**
+> ETH Zurich (2026.03) : **Inclure du contenu inférable réduit les taux de succès et augmente le coût de +20%**
 
 ```
-         Ecrire ceci                       Ne pas ecrire ceci
+         Écrire ceci                        Ne pas écrire ceci
   ┌─────────────────────────┐     ┌─────────────────────────┐
   │                         │     │                         │
-  │  "Utiliser le format    │     │  "Le code source est    │
-  │   feat: pour les        │     │   dans le dossier src/" │
-  │   commits"              │     │  L'IA peut le voir      │
-  │  L'IA ne peut pas       │     │   avec ls               │
-  │   le deduire            │     │                         │
-  │                         │     │  "React est base sur    │
-  │  "Pas de push direct    │     │   les composants"       │
-  │   sur main"             │     │  Deja dans la doc       │
-  │  Regle d'equipe, pas    │     │   officielle            │
-  │   dans le code          │     │                         │
-  │                         │     │  "Ce fichier fait 100   │
-  │  "Approbation QA        │     │   lignes"               │
-  │   requise avant         │     │  L'IA peut le lire      │
-  │   deploiement"          │     │   directement           │
-  │  Processus, non         │     │                         │
-  │   inferable             │     │                         │
+  │  « Utiliser le format   │     │  « Le code source est   │
+  │   feat: pour les        │     │   dans le dossier src/» │
+  │   commits »             │     │  L'IA peut le voir avec │
+  │  L'IA ne peut pas       │     │  ls                     │
+  │  inférer cela           │     │                         │
+  │                         │     │  « React est basé sur   │
+  │  « Pas de push direct   │     │   des composants »      │
+  │   sur main »            │     │  Déjà dans la           │
+  │  Règle d'équipe,        │     │  documentation          │
+  │  pas dans le code       │     │  officielle             │
+  │                         │     │                         │
+  │  « Approbation de       │     │  « Ce fichier fait      │
+  │   l'équipe QA requise   │     │   100 lignes »          │
+  │   avant le déploiement» │     │  L'IA peut le lire      │
+  │  Processus, non         │     │  directement            │
+  │  inférable              │     │                         │
+  │                         │     │                         │
   └─────────────────────────┘     └─────────────────────────┘
-       Ecrire dans AGENTS.md          NE PAS ecrire !
+       Écrire dans AGENTS.md           NE PAS écrire !
 ```
 
-**Exception :** « Les choses qui peuvent etre deduites mais dont l'inference est trop couteuse a chaque fois »
+**Exception :** « Les choses qui peuvent être inférées mais qui sont trop coûteuses à faire à chaque fois »
 
 ```
-  ex. : Liste complete des API (il faut lire 20 fichiers pour la reconstituer)
-  ex. : Relations du modele de donnees (dispersees dans 10 fichiers)
-  ex. : Relations d'appels inter-services (il faut verifier le code + l'infra)
+  ex. : Liste complète des API (nécessite de lire 20 fichiers)
+  ex. : Relations du modèle de données (éparpillées dans 10 fichiers)
+  ex. : Relations d'appels inter-services (nécessite de vérifier le code + l'infra)
 
-  → Pre-organisez-les dans .ai-agents/context/ !
-  → Dans AGENTS.md, ecrivez uniquement le chemin : "allez ici pour le trouver"
+  → Pré-organisez cela dans .ai-agents/context/ !
+  → Dans AGENTS.md, écrivez seulement le chemin : « allez ici pour le trouver »
 ```
 
 ```
-Inclure (non inferable)           .ai-agents/context/ (inference couteuse)     Exclure (inference peu couteuse)
-───────────────────────           ────────────────────────────────────         ────────────────────────
-Conventions d'equipe              Carte complete des API                       Structure des repertoires
-Actions interdites                Relations du modele de donnees               Contenu d'un seul fichier
-Formats PR/commit                 Specs evenements pub/sub                     Doc officielle du framework
-Dependances cachees               Topologie d'infrastructure                   Relations d'import
+À inclure (non inférable)       .ai-agents/context/ (inférence coûteuse)   À exclure (inférence bon marché)
+─────────────────────────       ──────────────────────────────────────      ────────────────────────────────
+Conventions de l'équipe         Carte complète des API                      Structure des répertoires
+Actions interdites              Relations du modèle de données              Contenu d'un seul fichier
+Formats PR/commit               Specs événements pub/sub                    Docs framework officielles
+Dépendances cachées             Topologie de l'infrastructure               Relations d'import
 ```
 
 ---
 
-## Comment ca fonctionne
+## Comment ça fonctionne
 
-### Etape 1 : Scan et classification du projet
+### Étape 1 : Scan et classification du projet
 
-Explore les repertoires jusqu'a une profondeur de 3 et classifie automatiquement selon les motifs de fichiers.
+Explore les répertoires jusqu'à la profondeur 3 et classifie automatiquement par patterns de fichiers.
 
 ```
 deployment.yaml + service.yaml  →  k8s-workload
@@ -233,77 +229,77 @@ values.yaml (Helm)              →  infra-component
 package.json + *.tsx            →  frontend
 go.mod                          →  backend-go
 Dockerfile + CI config          →  cicd
-...19 types detectes automatiquement
+...19 types détectés automatiquement
 ```
 
-### Etape 2 : Generation du contexte
+### Étape 2 : Génération du contexte
 
-Genere les fichiers de connaissances `.ai-agents/context/` en **analysant reellement le code** selon les types detectes.
+Génère les fichiers de connaissances `.ai-agents/context/` en **analysant réellement le code** selon les types détectés.
 
 ```
-Service backend detecte
-  → Scan routes/controllers → Genere api-spec.json
-  → Scan entites/schemas   → Genere data-model.md
-  → Scan config Kafka       → Genere event-spec.json
+Service backend détecté
+  → Scan routes/controllers → Génère api-spec.json
+  → Scan entities/schemas   → Génère data-model.md
+  → Scan config Kafka       → Génère event-spec.json
 ```
 
-### Etape 3 : Generation d'AGENTS.md
+### Étape 3 : Génération de AGENTS.md
 
-Genere AGENTS.md pour chaque repertoire en utilisant les templates appropries.
+Génère AGENTS.md pour chaque répertoire en utilisant les templates appropriés.
 
 ```
 AGENTS.md racine (Conventions globales)
   → Commits : Conventional Commits
-  → PR : Template requis, 1+ approbation
+  → PR : Template requis, 1+ approbations
   → Branches : feature/{ticket}-{desc}
        │
-       ▼ Heritage automatique (non repete dans les enfants)
+       ▼ Héritage automatique (non répété dans les enfants)
   apps/api/AGENTS.md
-    → Redefinit uniquement : "Ce service utilise Python"
+    → Remplace uniquement : « Ce service utilise Python »
 ```
 
-Les regles globales utilisent un **patron d'heritage** — ecrivez en un seul endroit, et cela s'applique automatiquement en aval.
+Les règles globales utilisent un **pattern d'héritage** — écrivez à un endroit, et cela s'applique automatiquement en aval.
 
 ```
-AGENTS.md racine ──────────────────────────────────────────
+AGENTS.md racine ──────────────────────────────────────────────
 │ Conventions globales :
 │  - Commits : Conventional Commits (feat:, fix:, chore:)
 │  - PR : Template requis, au moins 1 relecteur
 │  - Branche : feature/{ticket}-{desc}
 │
-│     Heritage auto                  Heritage auto
+│     Héritage auto               Héritage auto
 │     ┌──────────────────┐       ┌──────────────────┐
 │     ▼                  │       ▼                  │
 │  apps/api/AGENTS.md    │    infra/AGENTS.md       │
-│  (Seules les regles    │    (Seules les regles    │
-│   additionnelles       │     additionnelles       │
-│   specifiees)          │     specifiees)          │
-│  "Ce service utilise   │    "Pour modifier les    │
-│   Python"              │     values Helm,         │
-│                        │     Demander d'abord"    │
-└─────────────────────────┴──────────────────────────
+│  (Seules les règles    │    (Seules les règles    │
+│   supplémentaires      │     supplémentaires      │
+│   sont spécifiées)     │     sont spécifiées)     │
+│  « Ce service utilise  │    « Lors de la modif.  │
+│   Python »             │     des valeurs Helm,   │
+│                        │     Demander d'abord »  │
+└────────────────────────┴──────────────────────────
 ```
 
 **Avantages :**
-- Vous voulez changer les regles de commit ? → Modifiez uniquement la racine
-- Vous ajoutez un nouveau service ? → Les regles globales s'appliquent automatiquement
-- Vous avez besoin de regles differentes pour un service specifique ? → Redefinissez dans l'AGENTS.md de ce service
+- Vous voulez changer les règles de commit ? → Modifiez uniquement la racine
+- Vous ajoutez un nouveau service ? → Les règles globales s'appliquent automatiquement
+- Vous avez besoin de règles différentes pour un service spécifique ? → Surchargez dans le AGENTS.md de ce service
 
-### Etape 4 : Bootstrap specifique au fournisseur
+### Étape 4 : Bootstrap spécifique au fournisseur
 
-Ajoute des ponts vers les configurations specifiques aux fournisseurs pour que **tous les outils IA lisent** l'AGENTS.md genere.
+Ajoute des ponts vers les configurations spécifiques aux fournisseurs afin que **tous les outils IA lisent** le AGENTS.md généré.
 
 ```
 ┌──────────────┐     ┌─────────────┐     ┌─────────────┐
 │ Claude Code  │     │   Cursor    │     │   Codex     │
 │  CLAUDE.md   │     │  .mdc rules │     │  AGENTS.md  │
 │      ↓       │     │      ↓      │     │  (natif)    │
-│ "lire        │     │ "lire       │     │      ✓      │
-│  AGENTS.md"  │     │  AGENTS.md" │     │             │
+│ « lire       │     │ « lire      │     │      ✓      │
+│  AGENTS.md » │     │  AGENTS.md »│     │             │
 └──────┬───────┘     └──────┬──────┘     └─────────────┘
        └──────────┬─────────┘
                   ▼
-           AGENTS.md (source unique de verite)
+           AGENTS.md (source unique de vérité)
                   │
         ┌─────────┼─────────┐
         ▼         ▼         ▼
@@ -311,51 +307,51 @@ Ajoute des ponts vers les configurations specifiques aux fournisseurs pour que *
    context/     skills/      roles/
 ```
 
-> **Principe :** Les fichiers de bootstrap ne sont generes que pour les fournisseurs deja utilises. Les fichiers de configuration pour les outils non utilises ne sont jamais crees.
+> **Principe :** Les fichiers bootstrap ne sont générés que pour les fournisseurs déjà utilisés. Les fichiers de configuration pour les outils non utilisés ne sont jamais créés.
 
 ---
 
-## Compatibilite des fournisseurs
+## Compatibilité avec les fournisseurs
 
-| Outil | Lit automatiquement AGENTS.md | Bootstrap |
+| Outil | Lit AGENTS.md automatiquement | Bootstrap |
 |---|---|---|
-| **OpenAI Codex** | Oui (natif) | Non necessaire |
-| **Claude Code** | Partiel (fallback) | Ajoute une directive a `CLAUDE.md` |
-| **Cursor** | Non | Ajoute `.mdc` a `.cursor/rules/` |
-| **GitHub Copilot** | Non | Genere `.github/copilot-instructions.md` |
-| **Windsurf** | Non | Ajoute une directive a `.windsurfrules` |
-| **Aider** | Oui | Ajoute la lecture a `.aider.conf.yml` |
+| **OpenAI Codex** | Oui (natif) | Non nécessaire |
+| **Claude Code** | Partiel (fallback) | Ajoute une directive dans `CLAUDE.md` |
+| **Cursor** | Non | Ajoute `.mdc` dans `.cursor/rules/` |
+| **GitHub Copilot** | Non | Génère `.github/copilot-instructions.md` |
+| **Windsurf** | Non | Ajoute une directive dans `.windsurfrules` |
+| **Aider** | Oui | Ajoute une lecture dans `.aider.conf.yml` |
 
-Generation automatique des bootstraps :
+Générer les bootstraps automatiquement :
 ```bash
 bash scripts/sync-ai-rules.sh
 ```
 
 ---
 
-## Structure generee
+## Structure générée
 
 ```
 project-root/
 ├── AGENTS.md                          # Agent PM (orchestration globale)
 ├── .ai-agents/
-│   ├── context/                       # Fichiers de connaissances (charges au demarrage de session)
-│   │   ├── domain-overview.md         #   Domaine metier, politiques, contraintes
-│   │   ├── data-model.md             #   Definitions d'entites, relations, transitions d'etat
-│   │   ├── api-spec.json              #   Carte des API (JSON DSL, 3x d'economie de tokens)
-│   │   ├── event-spec.json            #   Specs evenements Kafka/MQ
-│   │   ├── infra-spec.md              #   Charts Helm, reseau, ordre de deploiement
-│   │   └── external-integration.md    #   API externes, authentification, limites de debit
-│   ├── skills/                        # Flux de travail comportementaux (charges a la demande)
-│   │   ├── develop/SKILL.md           #   Dev : analyser → concevoir → implementer → tester → PR
-│   │   ├── deploy/SKILL.md            #   Deploy : tag → demande de deploiement → verification
-│   │   ├── review/SKILL.md            #   Revue : basee sur une checklist
+│   ├── context/                       # Fichiers de connaissances (chargés au démarrage de session)
+│   │   ├── domain-overview.md         #   Domaine métier, politiques, contraintes
+│   │   ├── data-model.md             #   Définitions d'entités, relations, transitions d'état
+│   │   ├── api-spec.json              #   Carte des API (JSON DSL, économie de 3x tokens)
+│   │   ├── event-spec.json            #   Specs d'événements Kafka/MQ
+│   │   ├── infra-spec.md              #   Charts Helm, réseau, ordre de déploiement
+│   │   └── external-integration.md    #   API externes, auth, limites de débit
+│   ├── skills/                        # Flux de travail comportementaux (chargés à la demande)
+│   │   ├── develop/SKILL.md           #   Dev : analyser → concevoir → implémenter → tester → PR
+│   │   ├── deploy/SKILL.md            #   Déploiement : tag → demande → vérification
+│   │   ├── review/SKILL.md            #   Revue : basée sur checklist
 │   │   ├── hotfix/SKILL.md            #   Flux de correction d'urgence
-│   │   └── context-update/SKILL.md    #   Procedure de mise a jour du contexte
-│   └── roles/                         # Definitions de roles (profondeur de contexte par role)
+│   │   └── context-update/SKILL.md    #   Procédure de mise à jour des fichiers de contexte
+│   └── roles/                         # Définitions de rôles (profondeur de contexte par rôle)
 │       ├── pm.md                      #   Chef de projet
-│       ├── backend.md                 #   Developpeur Backend
-│       ├── frontend.md                #   Developpeur Frontend
+│       ├── backend.md                 #   Développeur backend
+│       ├── frontend.md                #   Développeur frontend
 │       ├── sre.md                     #   SRE / Infrastructure
 │       └── reviewer.md               #   Relecteur de code
 │
@@ -370,43 +366,43 @@ project-root/
 
 ## Lanceur de session
 
-Une fois tous les agents configures, choisissez l'agent souhaite et demarrez une session immediatement.
+Une fois tous les agents configurés, choisissez l'agent souhaité et démarrez une session immédiatement.
 
 ```bash
 $ ./ai-agency.sh
 
-=== Sessions d'agents IA ===
-Trouves : 8 agent(s)
+=== AI Agent Sessions ===
+Found: 8 agent(s)
 
   1) [PM] project-root
   2) api-service
   3) monitoring
   ...
 
-Selectionnez un agent (numero) : 2
+Select agent (number): 2
 
-=== Outil IA ===
+=== AI Tool ===
   1) claude
   2) codex
   3) print
 
-Selectionnez un outil : 1
+Select tool: 1
 
-→ Session demarree dans le repertoire api-service
+→ Session démarrée dans le répertoire api-service
 → L'agent charge automatiquement AGENTS.md et .ai-agents/context/
-→ Pret a travailler immediatement !
+→ Prêt à travailler immédiatement !
 ```
 
-**Execution parallele (tmux) :**
+**Exécution parallèle (tmux) :**
 
 ```bash
 $ ./ai-agency.sh --multi
 
-Selectionnez les agents : 1,2,3   # Executer PM + API + Monitoring simultanement
+Select agents: 1,2,3   # Lancer PM + API + Monitoring simultanément
 
 → 3 sessions tmux ouvertes
-→ Differents agents travaillent independamment dans chaque volet
-→ Changez de volet avec Ctrl+B N
+→ Des agents différents travaillent indépendamment dans chaque panneau
+→ Changer de panneau avec Ctrl+B N
 ```
 
 ---
@@ -415,8 +411,8 @@ Selectionnez les agents : 1,2,3   # Executer PM + API + Monitoring simultanement
 
 | Format | Nombre de tokens | Notes |
 |---|---|---|
-| Description d'API en langage naturel | ~200 tokens | |
-| JSON DSL | ~70 tokens | **3x d'economie** |
+| Description API en langage naturel | ~200 tokens | |
+| JSON DSL | ~70 tokens | **Économie de 3x** |
 
 **Exemple api-spec.json :**
 ```json
@@ -431,22 +427,22 @@ Selectionnez les agents : 1,2,3   # Executer PM + API + Monitoring simultanement
 }
 ```
 
-**Objectif AGENTS.md :** Moins de **300 tokens** apres substitution
+**Cible AGENTS.md :** Moins de **300 tokens** après substitution
 
 ---
 
 ## Protocole de restauration de session
 
 ```
-Demarrage de session :
+Début de session :
   1. Lire AGENTS.md (la plupart des outils IA le font automatiquement)
   2. Suivre les chemins des fichiers de contexte pour charger .ai-agents/context/
-  3. Verifier .ai-agents/context/current-work.md (travail en cours)
-  4. git log --oneline -10 (comprendre les changements recents)
+  3. Vérifier .ai-agents/context/current-work.md (travail en cours)
+  4. git log --oneline -10 (comprendre les changements récents)
 
 Fin de session :
   1. Travail en cours → Enregistrer dans current-work.md
-  2. Connaissances de domaine nouvellement acquises → Mettre a jour les fichiers de contexte
+  2. Nouvelles connaissances du domaine apprises → Mettre à jour les fichiers de contexte
   3. TODOs incomplets → Enregistrer explicitement
 ```
 
@@ -454,42 +450,42 @@ Fin de session :
 
 ## Maintenance du contexte
 
-Quand le code change, les fichiers `.ai-agents/context/` doivent etre mis a jour en consequence.
+Lorsque le code change, les fichiers `.ai-agents/context/` doivent être mis à jour en conséquence.
 
 ```
-API ajoutee/modifiee/supprimee   →  Mettre a jour api-spec.json
-Schema de BDD modifie            →  Mettre a jour data-model.md
-Spec d'evenement modifiee        →  Mettre a jour event-spec.json
-Politique metier modifiee        →  Mettre a jour domain-overview.md
-Integration externe modifiee     →  Mettre a jour external-integration.md
-Config d'infrastructure modifiee →  Mettre a jour infra-spec.md
+API ajoutée/modifiée/supprimée        →  Mettre à jour api-spec.json
+Schéma DB modifié                     →  Mettre à jour data-model.md
+Spec d'événement modifiée             →  Mettre à jour event-spec.json
+Politique métier modifiée             →  Mettre à jour domain-overview.md
+Intégration externe modifiée          →  Mettre à jour external-integration.md
+Configuration infrastructure modifiée →  Mettre à jour infra-spec.md
 ```
 
-> Ne pas mettre a jour signifie que la prochaine session **travaillera avec un contexte obsolete**.
+> Ne pas mettre à jour signifie que la prochaine session **travaillera avec un contexte obsolète**.
 
 ---
 
-## Resume du flux global
+## Résumé du flux global
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│  1. Configuration initiale (une seule fois)                      │
+│  1. Configuration initiale (une fois)                            │
 │                                                                  │
-│  Faire lire HOW_TO_AGENTS.md a l'IA                              │
+│  Demandez à l'IA de lire HOW_TO_AGENTS.md                        │
 │       │                                                          │
 │       ▼                                                          │
 │  L'IA analyse la structure du projet                             │
 │       │                                                          │
 │       ▼                                                          │
-│  Cree AGENTS.md dans chaque        Organise les connaissances    │
-│  repertoire                        dans .ai-agents/context/      │
-│  (identite de l'agent + regles     (specs API, modele, evenem.)  │
-│   + permissions)                                                 │
+│  Crée AGENTS.md dans chaque          Organise les connaissances  │
+│  répertoire                          dans .ai-agents/context/    │
+│  (identité agent + règles            (specs API, modèle,         │
+│   + permissions)                      événements)                │
 │                                                                  │
-│  Definit les flux de travail       Definit les roles dans        │
-│  dans .ai-agents/skills/           .ai-agents/roles/             │
-│  (procedures de developpement,     (Backend, Frontend, SRE)      │
-│   deploiement, revue)                                            │
+│  Définit les flux de travail dans    Définit les rôles dans      │
+│  .ai-agents/skills/                  .ai-agents/roles/           │
+│  (procédures de développement,       (Backend, Frontend, SRE)    │
+│   déploiement, revue)                                            │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
                               │
@@ -497,17 +493,17 @@ Config d'infrastructure modifiee →  Mettre a jour infra-spec.md
 ┌──────────────────────────────────────────────────────────────────┐
 │  2. Utilisation quotidienne                                      │
 │                                                                  │
-│  Executer ./ai-agency.sh                                         │
+│  Lancer ./ai-agency.sh                                           │
 │       │                                                          │
 │       ▼                                                          │
-│  Selectionner un agent (PM ? Backend ? SRE ?)                    │
+│  Sélectionner l'agent (PM ? Backend ? SRE ?)                     │
 │       │                                                          │
 │       ▼                                                          │
-│  Selectionner un outil IA (Claude ? Codex ? Cursor ?)            │
+│  Sélectionner l'outil IA (Claude ? Codex ? Cursor ?)             │
 │       │                                                          │
 │       ▼                                                          │
-│  Session demarre → AGENTS.md charge auto → .ai-agents/context/   │
-│  charge → Au travail !                                           │
+│  Session démarrée → AGENTS.md chargé auto → .ai-agents/context/  │
+│  chargé → Au travail !                                           │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
                               │
@@ -515,81 +511,81 @@ Config d'infrastructure modifiee →  Mettre a jour infra-spec.md
 ┌──────────────────────────────────────────────────────────────────┐
 │  3. Maintenance continue                                         │
 │                                                                  │
-│  Quand le code change :                                          │
-│    - L'IA met automatiquement a jour .ai-agents/context/         │
-│    - Ou un humain indique "C'est important, enregistre-le"       │
+│  Lorsque le code change :                                        │
+│    - L'IA met automatiquement à jour .ai-agents/context/         │
+│    - Ou un humain donne l'instruction « C'est important,         │
+│      enregistre-le »                                             │
 │                                                                  │
 │  Lors de l'ajout d'un nouveau service :                          │
-│    - Relancer HOW_TO_AGENTS.md → Nouvel AGENTS.md auto-genere    │
-│    - Les regles globales sont automatiquement heritees           │
+│    - Relancer HOW_TO_AGENTS.md → Nouveau AGENTS.md généré auto   │
+│    - Les règles globales sont automatiquement héritées           │
 │                                                                  │
-│  Quand l'IA fait des erreurs :                                   │
-│    - "Reanalyse ceci" → Fournir des indices → Une fois compris,  │
-│      mettre a jour .ai-agents/context/                           │
-│    - Cette boucle de retour ameliore la qualite du contexte      │
+│  Lorsque l'IA fait des erreurs :                                 │
+│    - « Ré-analyse ceci » → Fournir des indices → Une fois        │
+│      compris, mettre à jour .ai-agents/context/                  │
+│    - Cette boucle de rétroaction améliore la qualité du contexte │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Analogie : equipe traditionnelle vs equipe d'agents IA
+## Analogie : équipe de développement traditionnelle vs équipe d'agents IA
 
 ```
-              Equipe de dev traditionnelle  Equipe d'agents IA
-              ───────────────────────────   ──────────────────
- Leader       PM (humain)                   AGENTS.md racine (agent PM)
- Membres      N developpeurs               AGENTS.md dans chaque repertoire
- Integration  Confluence/Notion             .ai-agents/context/
- Manuels      Wiki d'equipe                .ai-agents/skills/
- Def. roles   Fiches de poste/R&R          .ai-agents/roles/
- Regles       Docs de conventions           Conventions globales (heritees)
- Arrivee      Arriver au bureau             Session demarre → AGENTS.md charge
- Depart       Partir (memoire conservee)    Session termine (memoire perdue !)
- Lendemain    Memoire intacte               .ai-agents/context/ charge (memoire restauree)
+              Équipe dev traditionnelle     Équipe d'agents IA
+              ─────────────────────────     ──────────────────────────
+ Responsable  PM (humain)                   AGENTS.md racine (agent PM)
+ Membres      N développeurs               AGENTS.md dans chaque répertoire
+ Intégration  Confluence/Notion            .ai-agents/context/
+ Manuels      Wiki d'équipe               .ai-agents/skills/
+ Defs. rôles  Fiches de poste/R&R          .ai-agents/roles/
+ Règles       Docs conventions équipe      Conventions globales (héritées)
+ Arrivée      Arriver au bureau            Session démarre → AGENTS.md chargé
+ Départ       Partir (mémoire conservée)   Session terminée (mémoire perdue !)
+ Lendemain    Mémoire intacte              .ai-agents/context/ chargé (mémoire restaurée)
 ```
 
-**Difference cle :** Les humains conservent leur memoire apres avoir quitte le travail, mais l'IA oublie tout a chaque fois.
-C'est pourquoi `.ai-agents/context/` existe — il sert de **memoire a long terme** pour l'IA.
+**Différence clé :** Les humains conservent leur mémoire après le travail, mais l'IA oublie tout à chaque fois.
+C'est pourquoi `.ai-agents/context/` existe — il sert de **mémoire à long terme** de l'IA.
 
 ---
 
 ## Checklist d'adoption
 
 ```
-Phase 1 (Bases)                Phase 2 (Contexte)               Phase 3 (Operations)
-────────────────               ─────────────────                ────────────────────
-☐ Generer AGENTS.md            ☐ Creer .ai-agents/context/      ☐ Definir .ai-agents/roles/
-☐ Enregistrer les commandes    ☐ domain-overview.md              ☐ Executer des sessions
-  build/test                                                       multi-agents
-☐ Enregistrer conventions      ☐ api-spec.json (DSL)             ☐ Flux .ai-agents/skills/
-  et regles
-☐ Conventions globales         ☐ data-model.md                   ☐ Boucle de retour iterative
-☐ Bootstraps fournisseurs      ☐ Mettre en place les regles
-                                 de maintenance
+Phase 1 (Bases)                Phase 2 (Contexte)               Phase 3 (Opérations)
+───────────────                ──────────────────               ────────────────────
+☐ Générer AGENTS.md            ☐ Créer .ai-agents/context/      ☐ Définir .ai-agents/roles/
+☐ Enregistrer commandes        ☐ domain-overview.md             ☐ Lancer sessions multi-agents
+  build/test                   ☐ api-spec.json (DSL)            ☐ Flux .ai-agents/skills/
+☐ Enregistrer conventions      ☐ data-model.md                  ☐ Boucle de rétroaction itérative
+  et règles                    ☐ Configurer règles de
+☐ Conventions globales           maintenance
+☐ Bootstraps fournisseurs
 ```
 
 ---
 
 ## Livrables
 
-| Fichier | Public | Objectif |
+| Fichier | Audience | Objectif |
 |---|---|---|
-| `HOW_TO_AGENTS.md` | IA | Manuel de meta-instructions que les agents lisent et executent |
-| `README.md` | Humain | Ce document — un guide pour la comprehension humaine |
-| `ai-agency.sh` | Humain | Selection d'agent → Lanceur de session IA |
-| `AGENTS.md` (chaque repertoire) | IA | Identite de l'agent + regles par repertoire |
-| `.ai-agents/context/*.md/json` | IA | Connaissances de domaine pre-organisees |
-| `.ai-agents/skills/*/SKILL.md` | IA | Flux de travail standardises |
-| `.ai-agents/roles/*.md` | IA/Humain | Strategies de chargement de contexte par role |
+| `HOW_TO_AGENTS.md` | IA | Manuel de méta-instructions que les agents lisent et exécutent |
+| `README.md` | Humain | Ce document — un guide pour la compréhension humaine |
+| `ai-agency.sh` | Humain | Sélection d'agent → lanceur de session IA |
+| `AGENTS.md` (chaque répertoire) | IA | Identité + règles de l'agent par répertoire |
+| `.ai-agents/context/*.md/json` | IA | Connaissances du domaine pré-organisées |
+| `.ai-agents/skills/*/SKILL.md` | IA | Flux de travail standardisés |
+| `.ai-agents/roles/*.md` | IA/Humain | Stratégies de chargement de contexte par rôle |
 
 ---
 
-## References
+## Références
 
-- [Kurly OMS Team AI Workflow](https://helloworld.kurly.com/blog/oms-claude-ai-workflow/) — Inspiration pour la conception du contexte de ce systeme
-- [AGENTS.md Standard](https://agents.md/) — Standard d'instructions d'agents independant du fournisseur
-- [ETH Zurich Research](https://www.infoq.com/news/2026/03/agents-context-file-value-review/) — « Ne documentez que ce qui ne peut pas etre deduit »
+- [Kurly OMS Team AI Workflow](https://helloworld.kurly.com/blog/oms-claude-ai-workflow/) — Inspiration pour la conception du contexte de ce système
+- [AGENTS.md Standard](https://agents.md/) — Standard d'instructions d'agents neutre vis-à-vis des fournisseurs
+- [ETH Zurich Research](https://www.infoq.com/news/2026/03/agents-context-file-value-review/) — « Ne documenter que ce qui ne peut pas être inféré »
 
 ---
 
@@ -600,5 +596,5 @@ MIT
 ---
 
 <p align="center">
-  <sub>Reduisez a zero le temps necessaire aux agents IA pour comprendre votre projet.</sub>
+  <sub>Réduisez à zéro le temps nécessaire aux agents IA pour comprendre votre projet.</sub>
 </p>
