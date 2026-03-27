@@ -21,7 +21,7 @@
 Клонируйте и запустите `ai-agency.sh` прямо сейчас, чтобы увидеть в действии:
 
 ```bash
-git clone <this-repo>
+git clone https://github.com/itdar/agents-initializer.git
 cd agents-initializer
 ./ai-agency.sh
 ```

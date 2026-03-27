@@ -18,7 +18,7 @@
 クローンしてすぐに `ai-agency.sh` を実行し、動作を確認できます：
 
 ```bash
-git clone <this-repo>
+git clone https://github.com/itdar/agents-initializer.git
 cd agents-initializer
 ./ai-agency.sh
 ```

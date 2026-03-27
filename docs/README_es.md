@@ -20,7 +20,7 @@ Este repositorio incluye archivos `AGENTS.md` y `.ai-agents/` preconfigurados co
 Clona el repositorio y ejecuta `ai-agency.sh` de inmediato para verlo en acción:
 
 ```bash
-git clone <this-repo>
+git clone https://github.com/itdar/agents-initializer.git
 cd agents-initializer
 ./ai-agency.sh
 ```

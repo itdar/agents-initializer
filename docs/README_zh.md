@@ -20,7 +20,7 @@
 克隆后立即运行 `ai-agency.sh`，即可查看实际效果：
 
 ```bash
-git clone <this-repo>
+git clone https://github.com/itdar/agents-initializer.git
 cd agents-initializer
 ./ai-agency.sh
 ```
