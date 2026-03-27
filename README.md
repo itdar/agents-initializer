@@ -17,6 +17,21 @@ One command → Project analysis → AGENTS.md generation → Works with any AI 
 
 > **Token usage notice** — During initial setup, a top-tier model analyzes the entire project and generates multiple files (AGENTS.md, .ai-agents/context/, .ai-agents/skills/, .ai-agents/roles/). This may consume tens of thousands of tokens depending on project size. This is a one-time cost; subsequent sessions load the pre-built context and start instantly.
 
+### Quick Start (Recommended)
+
+```bash
+# One command — interactive setup handles everything
+./setup.sh
+```
+
+`setup.sh` guides you through:
+1. **AI tool selection** — Claude Code, Codex, Gemini CLI (auto-detects installed tools)
+2. **Language selection** — 10 languages supported (English recommended for token efficiency)
+3. **Auto-execution** — Runs HOW_TO_AGENTS.md generation automatically
+4. **Next steps** — Shows how to launch agent sessions when done
+
+### Manual Setup
+
 ```bash
 # 1. Have the AI read HOW_TO_AGENTS.md and it handles the rest
 
@@ -465,7 +480,7 @@ Infrastructure config changed →  Update infra-spec.md
 ┌──────────────────────────────────────────────────────────────────┐
 │  1. Initial Setup (one-time)                                     │
 │                                                                  │
-│  Have the AI read HOW_TO_AGENTS.md                               │
+│  Run ./setup.sh (or manually have the AI read HOW_TO_AGENTS.md)  │
 │       │                                                          │
 │       ▼                                                          │
 │  AI analyzes the project structure                               │
@@ -562,6 +577,7 @@ Phase 1 (Basics)               Phase 2 (Context)                Phase 3 (Operati
 
 | File | Audience | Purpose |
 |---|---|---|
+| `setup.sh` | Human | One-command interactive setup (tool + language → auto-generate) |
 | `HOW_TO_AGENTS.md` | AI | Meta-instruction manual that agents read and execute |
 | `README.md` | Human | This document — a guide for human understanding |
 | `ai-agency.sh` | Human | Agent selection → AI session launcher |

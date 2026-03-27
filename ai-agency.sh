@@ -268,9 +268,9 @@ scan_agents "$PROJECT_ROOT"
 if [[ ${#AGENT_PATHS[@]} -eq 0 ]]; then
   echo -e "${RED}AGENTS.md 파일을 찾을 수 없습니다.${NC}"
   echo ""
-  echo "HOW_TO_AGENTS.md의 지침에 따라 먼저 AGENTS.md 파일들을 생성하세요:"
-  echo "  1. HOW_TO_AGENTS.md를 읽고 지침대로 실행"
-  echo "  2. 또는: claude -p \"HOW_TO_AGENTS.md를 읽고 지침대로 AGENTS.md 파일들을 생성하라\""
+  echo "먼저 AGENTS.md 파일들을 생성하세요:"
+  echo "  1. ./setup.sh 실행 (대화형 자동 세팅)"
+  echo "  2. 또는 수동: claude --dangerously-skip-permissions \"Read HOW_TO_AGENTS.md and generate AGENTS.md tailored to this project\""
   exit 1
 fi
 
