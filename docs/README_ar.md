@@ -1,39 +1,99 @@
 🌐 [English](../README.md) | [한국어](README_ko.md) | [日本語](README_ja.md) | [中文](README_zh.md) | [Español](README_es.md) | [Français](README_fr.md) | [Deutsch](README_de.md) | [Русский](README_ru.md) | [हिन्दी](README_hi.md) | [العربية](README_ar.md)
 
+<div align="center">
+
 # ai-initializer
 
-**مولّد سياق المشروع التلقائي لأدوات البرمجة بالذكاء الاصطناعي**
+**أمر واحد يمنح أي وكيل ذكاء اصطناعي فهماً فورياً للمشروع.**
 
-> يفحص دليل مشروعك ويولّد تلقائياً
-> `AGENTS.md` + سياق المعرفة/المهارات/الأدوار حتى تبدأ وكلاء الذكاء الاصطناعي العمل فوراً.
+يفحص مشروعك ← يولّد `AGENTS.md` + سياق المعرفة/المهارات/الأدوار
+← أي أداة ذكاء اصطناعي تبدأ العمل فوراً، في كل جلسة.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../LICENSE)
+
+</div>
+
+---
+
+## جرّبه الآن
+
+يتضمّن هذا المستودع ملفات `AGENTS.md` و`.ai-agents/` جاهزة مسبقاً كمثال عملي.
+استنسخه وشغّل `ai-agency.sh` فوراً لترى كيف يعمل:
+
+```bash
+git clone <this-repo>
+cd agents-initializer
+./ai-agency.sh
+```
 
 ```
-أمر واحد → تحليل المشروع → توليد AGENTS.md → يعمل مع أي أداة ذكاء اصطناعي
+=== AI Agent Sessions ===
+Project: /home/user/agents-initializer
+Found: 2 agent(s)
+
+  1) [PM] ai-initializer                (bg: Warm Brown)
+     Path: ./AGENTS.md
+     Project orchestrator managing all sub-agents
+
+  2) docs                                (bg: Navy)
+     Path: docs/AGENTS.md
+     Documentation specialist
+
+Select agent (number, or 'q' to quit): 1
+
+=== AI Tool ===
+  1) claude  (Claude Code CLI)
+  2) codex   (OpenAI Codex CLI)
+  3) print   (طباعة الموجّه فقط — للنسخ اليدوي)
+
+Select tool (1-3): 1
+
+→ الوكيل يقرأ AGENTS.md + يحمّل .ai-agents/context/ تلقائياً
+→ جاهز للعمل فوراً!
 ```
 
 ---
 
-## الاستخدام
+## تطبيق على مشروعك
 
-> **تنبيه حول استهلاك التوكنز** — أثناء الإعداد الأولي، يقوم نموذج متقدم بتحليل المشروع بالكامل وتوليد ملفات متعددة (AGENTS.md، .ai-agents/context/، .ai-agents/skills/، .ai-agents/roles/). قد يستهلك ذلك عشرات الآلاف من التوكنز اعتماداً على حجم المشروع. هذه تكلفة لمرة واحدة فقط؛ الجلسات اللاحقة تحمّل السياق المُعدّ مسبقاً وتبدأ فوراً.
+> **مهم:** انسخ `setup.sh` و`HOW_TO_AGENTS.md` إلى **دليل مشروعك الخاص** وشغّلهما من هناك.
+> هذه الملفات تحلّل هيكل المشروع المستهدف — يجب أن تكون داخله.
 
 ```bash
-# 1. اجعل الذكاء الاصطناعي يقرأ HOW_TO_AGENTS.md وسيتولى الباقي
+# 1. انسخ الملفات إلى مشروعك
+cp setup.sh HOW_TO_AGENTS.md /path/to/your-project/
+cd /path/to/your-project
+
+# 2. شغّل الإعداد التفاعلي (يختار أداة الذكاء الاصطناعي واللغة، ثم يولّد كل شيء تلقائياً)
+./setup.sh
+
+# 3. شغّل جلسة وكيل
+./ai-agency.sh
+```
+
+هذا كل شيء. `setup.sh` يتولى اكتشاف الأدوات واختيار اللغة وتشغيل التوليد الكامل تلقائياً.
+
+<details>
+<summary><b>الإعداد اليدوي (بدون setup.sh)</b></summary>
+
+```bash
+cd /path/to/your-project
 
 # الخيار A: بالإنجليزية (موصى به — تكلفة توكنز أقل، أداء أمثل للذكاء الاصطناعي)
 claude --dangerously-skip-permissions --model claude-opus-4-6 \
   "Read HOW_TO_AGENTS.md and generate AGENTS.md tailored to this project"
 
-# الخيار B: بلغة المستخدم (موصى به إذا كنت تخطط لتحرير AGENTS.md يدوياً)
+# الخيار B: بلغتك
 claude --dangerously-skip-permissions --model claude-opus-4-6 \
-  "HOW_TO_AGENTS.md를 읽고 이 프로젝트에 맞게 AGENTS.md를 생성하라"
+  "اقرأ HOW_TO_AGENTS.md وولّد AGENTS.md مخصصاً لهذا المشروع"
 
-# موصى به: --model claude-opus-4-6 (أو أحدث) للحصول على أفضل النتائج
-# موصى به: --dangerously-skip-permissions للتنفيذ المستقل دون انقطاع
-
-# 2. ابدأ العمل مع الوكلاء المولَّدين
+# ثم شغّل جلسات الوكلاء
 ./ai-agency.sh
 ```
+
+</details>
+
+> **تنبيه حول التوكنز:** الإعداد الأولي يحلّل المشروع كاملاً وقد يستهلك عشرات الآلاف من التوكنز. هذه تكلفة لمرة واحدة فقط — الجلسات اللاحقة تحمّل السياق المُعدّ مسبقاً فوراً.
 
 ---
 
@@ -211,6 +271,10 @@ project/
 الإجراءات المحظورة             علاقات نموذج البيانات               محتويات الملف الواحد
 صيغ PR/commit                  مواصفات نشر/استقبال الأحداث         توثيق الأطر الرسمية
 التبعيات المخفية               طوبولوجيا البنية التحتية             علاقات الاستيراد
+                               أهداف KPI والمقاييس التجارية
+                               خريطة أصحاب المصلحة ومسارات الموافقة
+                               دفاتر تشغيل Ops ومسارات التصعيد
+                               خارطة الطريق وتتبع المعالم
 ```
 
 ---
@@ -337,7 +401,11 @@ project-root/
 │   │   ├── api-spec.json              #   خريطة API (JSON DSL، توفير 3x في التوكنز)
 │   │   ├── event-spec.json            #   مواصفات أحداث Kafka/MQ
 │   │   ├── infra-spec.md              #   Helm charts، الشبكة، ترتيب النشر
-│   │   └── external-integration.md    #   APIs خارجية، المصادقة، حدود المعدل
+│   │   ├── external-integration.md    #   APIs خارجية، المصادقة، حدود المعدل
+│   │   ├── business-metrics.md        #   مؤشرات KPI وOKR، نموذج الإيرادات، معايير النجاح
+│   │   ├── stakeholder-map.md         #   صانعو القرار، مسارات الموافقة، RACI
+│   │   ├── ops-runbook.md             #   الإجراءات التشغيلية، التصعيد، SLA
+│   │   └── planning-roadmap.md        #   المعالم، التبعيات، الجدول الزمني
 │   ├── skills/                        # سير عمل سلوكية (تُحمَّل عند الطلب)
 │   │   ├── develop/SKILL.md           #   التطوير: تحليل → تصميم → تنفيذ → اختبار → PR
 │   │   ├── deploy/SKILL.md            #   النشر: وسم → طلب نشر → تحقق
@@ -362,41 +430,11 @@ project-root/
 
 ## مشغّل الجلسات
 
-بمجرد إعداد جميع الوكلاء، اختر الوكيل المطلوب وابدأ جلسة فوراً.
-
 ```bash
-$ ./ai-agency.sh
-
-=== AI Agent Sessions ===
-Found: 8 agent(s)
-
-  1) [PM] project-root
-  2) api-service
-  3) monitoring
-  ...
-
-Select agent (number): 2
-
-=== AI Tool ===
-  1) claude
-  2) codex
-  3) print
-
-Select tool: 1
-
-→ Session started in the api-service directory
-→ Agent automatically loads AGENTS.md and .ai-agents/context/
-→ Ready to work immediately!
-```
-
-**التنفيذ المتوازي (tmux):**
-
-```bash
-$ ./ai-agency.sh --multi
-
-Select agents: 1,2,3   # تشغيل PM + API + Monitoring في وقت واحد
-
-→ 3 tmux sessions open
+./ai-agency.sh               # وضع اختيار تفاعلي
+./ai-agency.sh --multi       # تشغيل وكلاء متعددين في tmux بالتوازي
+./ai-agency.sh --agent pm    # تشغيل وكيل محدد مباشرة
+./ai-agency.sh --tool codex  # تحديد أداة الذكاء الاصطناعي مسبقاً
 → Different agents work independently in each pane
 → Switch panes with Ctrl+B N
 ```
@@ -455,6 +493,10 @@ Select agents: 1,2,3   # تشغيل PM + API + Monitoring في وقت واحد
 تغيير سياسة الأعمال       →  حدِّث domain-overview.md
 تغيير التكامل الخارجي     →  حدِّث external-integration.md
 تغيير إعداد البنية التحتية →  حدِّث infra-spec.md
+تغيير أهداف KPI/OKR       →  حدِّث business-metrics.md
+تغيير هيكل الفريق          →  حدِّث stakeholder-map.md
+تغيير إجراء تشغيلي         →  حدِّث ops-runbook.md
+تغيير المعالم/خارطة الطريق  →  حدِّث planning-roadmap.md
 ```
 
 > الفشل في التحديث يعني أن الجلسة التالية ستـ**عمل بسياق قديم**.
@@ -467,7 +509,7 @@ Select agents: 1,2,3   # تشغيل PM + API + Monitoring في وقت واحد
 ┌──────────────────────────────────────────────────────────────────┐
 │  1. الإعداد الأولي (مرة واحدة)                                   │
 │                                                                  │
-│  اجعل الذكاء الاصطناعي يقرأ HOW_TO_AGENTS.md                     │
+│  شغّل ./setup.sh (يقرأ HOW_TO_AGENTS.md ويتولى الباقي)           │
 │       │                                                          │
 │       ▼                                                          │
 │  يحلل الذكاء الاصطناعي هيكل المشروع                              │
@@ -566,6 +608,7 @@ Select agents: 1,2,3   # تشغيل PM + API + Monitoring في وقت واحد
 | الملف | الجمهور | الغرض |
 |---|---|---|
 | `HOW_TO_AGENTS.md` | الذكاء الاصطناعي | دليل تعليمات meta يقرأه الوكلاء وينفذونه |
+| `setup.sh` | الإنسان | إعداد تفاعلي: اكتشاف الأدوات + اختيار اللغة + التوليد الكامل |
 | `README.md` | الإنسان | هذا الوثيق — دليل للفهم البشري |
 | `ai-agency.sh` | الإنسان | اختيار الوكيل → مشغّل جلسة الذكاء الاصطناعي |
 | `AGENTS.md` (كل دليل) | الذكاء الاصطناعي | هوية وقواعد الوكيل لكل دليل |

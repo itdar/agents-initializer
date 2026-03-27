@@ -1,19 +1,77 @@
 🌐 [English](../README.md) | [한국어](README_ko.md) | [日本語](README_ja.md) | [中文](README_zh.md) | [Español](README_es.md) | [Français](README_fr.md) | [Deutsch](README_de.md) | [Русский](README_ru.md) | [हिन्दी](README_hi.md) | [العربية](README_ar.md)
 
+<div align="center">
+
 # ai-initializer
 
-**Générateur automatique de contexte de projet pour les outils de codage IA**
+**Une commande pour donner à tout agent IA une compréhension instantanée du projet.**
 
-> Analyse votre répertoire de projet et génère automatiquement
-> `AGENTS.md` + le contexte de connaissances/compétences/rôles afin que les agents IA puissent commencer à travailler immédiatement.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../LICENSE)
+
+</div>
+
+---
+
+## Essayez Maintenant
+
+Ce dépôt inclut des fichiers `AGENTS.md` et `.ai-agents/` préconstruits comme exemple fonctionnel.
+Clonez et exécutez `ai-agency.sh` immédiatement pour le voir en action :
+
+```bash
+git clone <this-repo>
+cd agents-initializer
+./ai-agency.sh
+```
 
 ```
-Une commande → Analyse du projet → Génération de AGENTS.md → Fonctionne avec n'importe quel outil IA
+=== AI Agent Sessions ===
+Project: /home/user/agents-initializer
+Found: 2 agent(s)
+
+  1) [PM] ai-initializer                (bg: Warm Brown)
+     Path: ./AGENTS.md
+     Project orchestrator managing all sub-agents
+
+  2) docs                                (bg: Navy)
+     Path: docs/AGENTS.md
+     Documentation specialist
+
+Select agent (number, or 'q' to quit): 1
+
+=== AI Tool ===
+  1) claude  (Claude Code CLI)
+  2) codex   (OpenAI Codex CLI)
+  3) print   (print prompt only — for manual copy)
+
+Select tool (1-3): 1
+
+→ Agent reads AGENTS.md + loads .ai-agents/context/ automatically
+→ Ready to work immediately!
 ```
 
 ---
 
-## Utilisation
+## Appliquer à Votre Projet
+
+> **Important :** Copiez `setup.sh` et `HOW_TO_AGENTS.md` dans le répertoire de votre propre projet avant de commencer.
+
+```bash
+# Copier les fichiers nécessaires dans votre projet
+cp /chemin/vers/agents-initializer/setup.sh votre-projet/
+cp /chemin/vers/agents-initializer/HOW_TO_AGENTS.md votre-projet/
+
+# Se rendre dans votre projet
+cd votre-projet
+
+# Lancer la configuration initiale (analyse + génération de AGENTS.md)
+./setup.sh
+
+# Démarrer une session agent
+./ai-agency.sh
+```
+
+<details>
+<summary>Configuration manuelle (sans setup.sh)</summary>
 
 > **Avis sur la consommation de tokens** — Lors de la configuration initiale, un modèle de premier plan analyse l'intégralité du projet et génère plusieurs fichiers (AGENTS.md, .ai-agents/context/, .ai-agents/skills/, .ai-agents/roles/). Cela peut consommer des dizaines de milliers de tokens selon la taille du projet. Il s'agit d'un coût unique ; les sessions suivantes chargent le contexte pré-construit et démarrent instantanément.
 
@@ -34,6 +92,8 @@ claude --dangerously-skip-permissions --model claude-opus-4-6 \
 # 2. Commencez à travailler avec les agents générés
 ./ai-agency.sh
 ```
+
+</details>
 
 ---
 
@@ -213,6 +273,10 @@ Conventions de l'équipe         Carte complète des API                      St
 Actions interdites              Relations du modèle de données              Contenu d'un seul fichier
 Formats PR/commit               Specs événements pub/sub                    Docs framework officielles
 Dépendances cachées             Topologie de l'infrastructure               Relations d'import
+                               Objectifs KPI et métriques métier
+                               Carte des parties prenantes et flux d'approbation
+                               Runbooks opérationnels et chemins d'escalade
+                               Feuille de route et suivi des jalons
 ```
 
 ---
@@ -341,7 +405,11 @@ project-root/
 │   │   ├── api-spec.json              #   Carte des API (JSON DSL, économie de 3x tokens)
 │   │   ├── event-spec.json            #   Specs d'événements Kafka/MQ
 │   │   ├── infra-spec.md              #   Charts Helm, réseau, ordre de déploiement
-│   │   └── external-integration.md    #   API externes, auth, limites de débit
+│   │   ├── external-integration.md    #   API externes, auth, limites de débit
+│   │   ├── business-metrics.md        #   KPIs, OKRs, modèle de revenus, critères de succès
+│   │   ├── stakeholder-map.md         #   Décideurs, flux d'approbation, RACI
+│   │   ├── ops-runbook.md             #   Procédures opérationnelles, escalade, SLA
+│   │   └── planning-roadmap.md        #   Jalons, dépendances, calendrier
 │   ├── skills/                        # Flux de travail comportementaux (chargés à la demande)
 │   │   ├── develop/SKILL.md           #   Dev : analyser → concevoir → implémenter → tester → PR
 │   │   ├── deploy/SKILL.md            #   Déploiement : tag → demande → vérification
@@ -366,43 +434,10 @@ project-root/
 
 ## Lanceur de session
 
-Une fois tous les agents configurés, choisissez l'agent souhaité et démarrez une session immédiatement.
-
 ```bash
-$ ./ai-agency.sh
-
-=== AI Agent Sessions ===
-Found: 8 agent(s)
-
-  1) [PM] project-root
-  2) api-service
-  3) monitoring
-  ...
-
-Select agent (number): 2
-
-=== AI Tool ===
-  1) claude
-  2) codex
-  3) print
-
-Select tool: 1
-
-→ Session démarrée dans le répertoire api-service
-→ L'agent charge automatiquement AGENTS.md et .ai-agents/context/
-→ Prêt à travailler immédiatement !
-```
-
-**Exécution parallèle (tmux) :**
-
-```bash
-$ ./ai-agency.sh --multi
-
-Select agents: 1,2,3   # Lancer PM + API + Monitoring simultanément
-
-→ 3 sessions tmux ouvertes
-→ Des agents différents travaillent indépendamment dans chaque panneau
-→ Changer de panneau avec Ctrl+B N
+./ai-agency.sh              # Sélection interactive : agent → outil IA → démarrage
+./ai-agency.sh --multi      # Lancer plusieurs agents en parallèle (tmux, Ctrl+B N)
+./ai-agency.sh --print      # Afficher la commande sans l'exécuter
 ```
 
 ---
@@ -459,6 +494,10 @@ Spec d'événement modifiée             →  Mettre à jour event-spec.json
 Politique métier modifiée             →  Mettre à jour domain-overview.md
 Intégration externe modifiée          →  Mettre à jour external-integration.md
 Configuration infrastructure modifiée →  Mettre à jour infra-spec.md
+Objectifs KPI/OKR modifiés           →  Mettre à jour business-metrics.md
+Structure d'équipe modifiée          →  Mettre à jour stakeholder-map.md
+Procédure opérationnelle modifiée    →  Mettre à jour ops-runbook.md
+Jalon/feuille de route modifié       →  Mettre à jour planning-roadmap.md
 ```
 
 > Ne pas mettre à jour signifie que la prochaine session **travaillera avec un contexte obsolète**.
@@ -471,7 +510,7 @@ Configuration infrastructure modifiée →  Mettre à jour infra-spec.md
 ┌──────────────────────────────────────────────────────────────────┐
 │  1. Configuration initiale (une fois)                            │
 │                                                                  │
-│  Demandez à l'IA de lire HOW_TO_AGENTS.md                        │
+│  Exécuter ./setup.sh                                             │
 │       │                                                          │
 │       ▼                                                          │
 │  L'IA analyse la structure du projet                             │
@@ -571,6 +610,7 @@ Phase 1 (Bases)                Phase 2 (Contexte)               Phase 3 (Opérat
 
 | Fichier | Audience | Objectif |
 |---|---|---|
+| `setup.sh` | Humain | Lance la configuration initiale (analyse + génération de AGENTS.md) |
 | `HOW_TO_AGENTS.md` | IA | Manuel de méta-instructions que les agents lisent et exécutent |
 | `README.md` | Humain | Ce document — un guide pour la compréhension humaine |
 | `ai-agency.sh` | Humain | Sélection d'agent → lanceur de session IA |

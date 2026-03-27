@@ -1,54 +1,99 @@
 🌐 [English](README.md) | [한국어](docs/README_ko.md) | [日本語](docs/README_ja.md) | [中文](docs/README_zh.md) | [Español](docs/README_es.md) | [Français](docs/README_fr.md) | [Deutsch](docs/README_de.md) | [Русский](docs/README_ru.md) | [हिन्दी](docs/README_hi.md) | [العربية](docs/README_ar.md)
 
+<div align="center">
+
 # ai-initializer
 
-**Automatic project context generator for AI coding tools**
+**One command to give any AI agent instant project understanding.**
 
-> Scans your project directory and auto-generates
-> `AGENTS.md` + knowledge/skill/role context so AI agents can start working immediately.
+Scans your project → generates `AGENTS.md` + knowledge/skill/role context
+→ any AI tool starts working immediately, every session.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+</div>
+
+---
+
+## Try It Now
+
+This repository includes pre-built `AGENTS.md` and `.ai-agents/` files as a working example.
+Clone and run `ai-agency.sh` immediately to see it in action:
+
+```bash
+git clone <this-repo>
+cd agents-initializer
+./ai-agency.sh
+```
 
 ```
-One command → Project analysis → AGENTS.md generation → Works with any AI tool
+=== AI Agent Sessions ===
+Project: /home/user/agents-initializer
+Found: 2 agent(s)
+
+  1) [PM] ai-initializer                (bg: Warm Brown)
+     Path: ./AGENTS.md
+     Project orchestrator managing all sub-agents
+
+  2) docs                                (bg: Navy)
+     Path: docs/AGENTS.md
+     Documentation specialist
+
+Select agent (number, or 'q' to quit): 1
+
+=== AI Tool ===
+  1) claude  (Claude Code CLI)
+  2) codex   (OpenAI Codex CLI)
+  3) print   (print prompt only — for manual copy)
+
+Select tool (1-3): 1
+
+→ Agent reads AGENTS.md + loads .ai-agents/context/ automatically
+→ Ready to work immediately!
 ```
 
 ---
 
-## Usage
+## Apply to Your Project
 
-> **Token usage notice** — During initial setup, a top-tier model analyzes the entire project and generates multiple files (AGENTS.md, .ai-agents/context/, .ai-agents/skills/, .ai-agents/roles/). This may consume tens of thousands of tokens depending on project size. This is a one-time cost; subsequent sessions load the pre-built context and start instantly.
-
-### Quick Start (Recommended)
+> **Important:** Copy `setup.sh` and `HOW_TO_AGENTS.md` to **your own project directory** and run from there.
+> These files analyze the target project's structure — they must be inside it.
 
 ```bash
-# One command — interactive setup handles everything
+# 1. Copy files to your project
+cp setup.sh HOW_TO_AGENTS.md /path/to/your-project/
+cd /path/to/your-project
+
+# 2. Run interactive setup (selects AI tool + language, then auto-generates everything)
 ./setup.sh
+
+# 3. Launch an agent session
+./ai-agency.sh
 ```
 
-`setup.sh` guides you through:
-1. **AI tool selection** — Claude Code, Codex, Gemini CLI (auto-detects installed tools)
-2. **Language selection** — 10 languages supported (English recommended for token efficiency)
-3. **Auto-execution** — Runs HOW_TO_AGENTS.md generation automatically
-4. **Next steps** — Shows how to launch agent sessions when done
+That's it. `setup.sh` handles tool detection, language selection, and runs the full generation automatically.
 
-### Manual Setup
+<details>
+<summary><b>Manual Setup (without setup.sh)</b></summary>
 
 ```bash
-# 1. Have the AI read HOW_TO_AGENTS.md and it handles the rest
+cd /path/to/your-project
 
 # Option A: English (recommended — lower token cost, optimal AI performance)
 claude --dangerously-skip-permissions --model claude-opus-4-6 \
   "Read HOW_TO_AGENTS.md and generate AGENTS.md tailored to this project"
 
-# Option B: User's language (recommended if you plan to manually edit AGENTS.md)
+# Option B: Your language
 claude --dangerously-skip-permissions --model claude-opus-4-6 \
   "HOW_TO_AGENTS.md를 읽고 이 프로젝트에 맞게 AGENTS.md를 생성하라"
 
-# Recommended: --model claude-opus-4-6 (or later) for best results
-# Recommended: --dangerously-skip-permissions for uninterrupted autonomous execution
-
-# 2. Start working with the generated agents
+# Then launch agent sessions
 ./ai-agency.sh
 ```
+
+</details>
+
+> **Token notice:** Initial setup analyzes the full project and may consume tens of thousands of tokens. This is a one-time cost — subsequent sessions load pre-built context instantly.
 
 ---
 
@@ -224,6 +269,10 @@ Team conventions               Full API map                              Directo
 Prohibited actions             Data model relationships                  Single file contents
 PR/commit formats              Event pub/sub specs                       Official framework docs
 Hidden dependencies            Infrastructure topology                   Import relationships
+                               KPI targets & business metrics
+                               Stakeholder map & approval flows
+                               Ops runbooks & escalation paths
+                               Roadmap & milestone tracking
 ```
 
 ---
@@ -350,7 +399,11 @@ project-root/
 │   │   ├── api-spec.json              #   API map (JSON DSL, 3x token savings)
 │   │   ├── event-spec.json            #   Kafka/MQ event specs
 │   │   ├── infra-spec.md              #   Helm charts, networking, deployment order
-│   │   └── external-integration.md    #   External APIs, auth, rate limits
+│   │   ├── external-integration.md    #   External APIs, auth, rate limits
+│   │   ├── business-metrics.md        #   KPIs, OKRs, revenue model, success criteria
+│   │   ├── stakeholder-map.md         #   Decision makers, approval flows, RACI
+│   │   ├── ops-runbook.md             #   Operational procedures, escalation, SLA
+│   │   └── planning-roadmap.md        #   Milestones, dependencies, timeline
 │   ├── skills/                        # Behavioral workflows (loaded on demand)
 │   │   ├── develop/SKILL.md           #   Dev: analyze → design → implement → test → PR
 │   │   ├── deploy/SKILL.md            #   Deploy: tag → deploy request → verify
@@ -375,44 +428,15 @@ project-root/
 
 ## Session Launcher
 
-Once all agents are set up, pick the desired agent and start a session right away.
-
 ```bash
-$ ./ai-agency.sh
-
-=== AI Agent Sessions ===
-Found: 8 agent(s)
-
-  1) [PM] project-root
-  2) api-service
-  3) monitoring
-  ...
-
-Select agent (number): 2
-
-=== AI Tool ===
-  1) claude
-  2) codex
-  3) print
-
-Select tool: 1
-
-→ Session started in the api-service directory
-→ Agent automatically loads AGENTS.md and .ai-agents/context/
-→ Ready to work immediately!
+./ai-agency.sh                    # Interactive: select agent + tool
+./ai-agency.sh --tool claude      # Direct launch with Claude
+./ai-agency.sh --agent api        # Select agent by keyword
+./ai-agency.sh --multi            # Parallel agents in tmux
+./ai-agency.sh --list             # List all available agents
 ```
 
-**Parallel Execution (tmux):**
-
-```bash
-$ ./ai-agency.sh --multi
-
-Select agents: 1,2,3   # Run PM + API + Monitoring simultaneously
-
-→ 3 tmux sessions open
-→ Different agents work independently in each pane
-→ Switch panes with Ctrl+B N
-```
+See the [Sample Output](#sample-running-agents-after-setup) in Quick Start for a full walkthrough.
 
 ---
 
@@ -462,12 +486,16 @@ Session end:
 When code changes, `.ai-agents/context/` files must be updated accordingly.
 
 ```
-API added/changed/removed     →  Update api-spec.json
-DB schema changed             →  Update data-model.md
-Event spec changed            →  Update event-spec.json
-Business policy changed       →  Update domain-overview.md
-External integration changed  →  Update external-integration.md
-Infrastructure config changed →  Update infra-spec.md
+API added/changed/removed      →  Update api-spec.json
+DB schema changed              →  Update data-model.md
+Event spec changed             →  Update event-spec.json
+Business policy changed        →  Update domain-overview.md
+External integration changed   →  Update external-integration.md
+Infrastructure config changed  →  Update infra-spec.md
+KPI/OKR targets changed       →  Update business-metrics.md
+Team structure changed         →  Update stakeholder-map.md
+Operational procedure changed  →  Update ops-runbook.md
+Milestone/roadmap changed      →  Update planning-roadmap.md
 ```
 
 > Failing to update means the next session will **work with stale context**.

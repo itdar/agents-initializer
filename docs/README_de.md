@@ -1,39 +1,99 @@
 🌐 [English](../README.md) | [한국어](README_ko.md) | [日本語](README_ja.md) | [中文](README_zh.md) | [Español](README_es.md) | [Français](README_fr.md) | [Deutsch](README_de.md) | [Русский](README_ru.md) | [हिन्दी](README_hi.md) | [العربية](README_ar.md)
 
+<div align="center">
+
 # ai-initializer
 
-**Automatischer Projektkontextgenerator für KI-Codierungswerkzeuge**
+**Ein Befehl, um jedem KI-Agenten sofortiges Projektverständnis zu geben.**
 
-> Scannt Ihr Projektverzeichnis und generiert automatisch
-> `AGENTS.md` + Wissens-/Fähigkeits-/Rollenkontexte, damit KI-Agenten sofort mit der Arbeit beginnen können.
+Scannt Ihr Projekt → generiert `AGENTS.md` + Wissens-/Fähigkeits-/Rollenkontexte
+→ jedes KI-Werkzeug beginnt sofort zu arbeiten, in jeder Sitzung.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../LICENSE)
+
+</div>
+
+---
+
+## Jetzt Ausprobieren
+
+Dieses Repository enthält vorgefertigte `AGENTS.md` und `.ai-agents/`-Dateien als funktionierendes Beispiel.
+Klonen Sie es und führen Sie `ai-agency.sh` sofort aus, um es in Aktion zu sehen:
+
+```bash
+git clone <this-repo>
+cd agents-initializer
+./ai-agency.sh
+```
 
 ```
-Ein Befehl → Projektanalyse → AGENTS.md-Generierung → Funktioniert mit jedem KI-Werkzeug
+=== AI Agent Sessions ===
+Project: /home/user/agents-initializer
+Found: 2 agent(s)
+
+  1) [PM] ai-initializer                (bg: Warm Brown)
+     Path: ./AGENTS.md
+     Project orchestrator managing all sub-agents
+
+  2) docs                                (bg: Navy)
+     Path: docs/AGENTS.md
+     Documentation specialist
+
+Select agent (number, or 'q' to quit): 1
+
+=== AI Tool ===
+  1) claude  (Claude Code CLI)
+  2) codex   (OpenAI Codex CLI)
+  3) print   (Prompt nur ausgeben — zum manuellen Kopieren)
+
+Select tool (1-3): 1
+
+→ Agent liest AGENTS.md + lädt .ai-agents/context/ automatisch
+→ Sofort einsatzbereit!
 ```
 
 ---
 
-## Verwendung
+## Auf Ihr Projekt Anwenden
 
-> **Hinweis zur Token-Nutzung** — Beim ersten Einrichten analysiert ein Spitzenmodell das gesamte Projekt und generiert mehrere Dateien (AGENTS.md, .ai-agents/context/, .ai-agents/skills/, .ai-agents/roles/). Abhängig von der Projektgröße können dabei Zehntausende von Tokens verbraucht werden. Dies ist eine einmalige Kosten; nachfolgende Sitzungen laden den vorgefertigten Kontext und starten sofort.
+> **Wichtig:** Kopieren Sie `setup.sh` und `HOW_TO_AGENTS.md` in **Ihr eigenes Projektverzeichnis** und führen Sie sie von dort aus.
+> Diese Dateien analysieren die Struktur des Zielprojekts — sie müssen sich darin befinden.
 
 ```bash
-# 1. Die KI HOW_TO_AGENTS.md lesen lassen — sie erledigt den Rest
+# 1. Dateien in Ihr Projekt kopieren
+cp setup.sh HOW_TO_AGENTS.md /pfad/zu/ihrem-projekt/
+cd /pfad/zu/ihrem-projekt
+
+# 2. Interaktives Setup ausführen (wählt KI-Werkzeug und Sprache, generiert dann alles automatisch)
+./setup.sh
+
+# 3. Eine Agentensitzung starten
+./ai-agency.sh
+```
+
+Das ist alles. `setup.sh` übernimmt die Werkzeugerkennung, Sprachauswahl und führt die vollständige Generierung automatisch durch.
+
+<details>
+<summary><b>Manuelle Einrichtung (ohne setup.sh)</b></summary>
+
+```bash
+cd /pfad/zu/ihrem-projekt
 
 # Option A: Englisch (empfohlen — geringere Token-Kosten, optimale KI-Leistung)
 claude --dangerously-skip-permissions --model claude-opus-4-6 \
   "Read HOW_TO_AGENTS.md and generate AGENTS.md tailored to this project"
 
-# Option B: Sprache des Benutzers (empfohlen, wenn Sie AGENTS.md manuell bearbeiten möchten)
+# Option B: Deutsch
 claude --dangerously-skip-permissions --model claude-opus-4-6 \
   "Lies HOW_TO_AGENTS.md und erstelle eine auf dieses Projekt zugeschnittene AGENTS.md"
 
-# Empfohlen: --model claude-opus-4-6 (oder neuer) für beste Ergebnisse
-# Empfohlen: --dangerously-skip-permissions für ununterbrochene autonome Ausführung
-
-# 2. Mit den generierten Agenten zu arbeiten beginnen
+# Agentensitzungen starten
 ./ai-agency.sh
 ```
+
+</details>
+
+> **Hinweis zur Token-Nutzung:** Die Ersteinrichtung analysiert das gesamte Projekt und kann Zehntausende von Tokens verbrauchen. Dies ist eine einmalige Kosten — nachfolgende Sitzungen laden den vorgefertigten Kontext sofort.
 
 ---
 
@@ -213,6 +273,10 @@ Team-Konventionen                   Vollständige API-Karte                     
 Verbotene Aktionen                  Datenmodell-Beziehungen                      Einzelne Dateiinhalte
 PR-/Commit-Formate                  Event-Pub/Sub-Spezifikationen                Offizielle Framework-Docs
 Versteckte Abhängigkeiten           Infrastruktur-Topologie                      Import-Beziehungen
+                                    KPI-Ziele & Geschäftskennzahlen
+                                    Stakeholder-Karte & Genehmigungsabläufe
+                                    Ops-Runbooks & Eskalationspfade
+                                    Roadmap & Meilenstein-Tracking
 ```
 
 ---
@@ -340,7 +404,11 @@ project-root/
 │   │   ├── api-spec.json              #   API-Karte (JSON-DSL, 3-fache Token-Einsparung)
 │   │   ├── event-spec.json            #   Kafka/MQ-Ereignisspezifikationen
 │   │   ├── infra-spec.md              #   Helm-Charts, Netzwerk, Deployment-Reihenfolge
-│   │   └── external-integration.md    #   Externe APIs, Auth, Rate-Limits
+│   │   ├── external-integration.md    #   Externe APIs, Auth, Rate-Limits
+│   │   ├── business-metrics.md        #   KPIs, OKRs, Umsatzmodell, Erfolgskriterien
+│   │   ├── stakeholder-map.md         #   Entscheidungsträger, Genehmigungsabläufe, RACI
+│   │   ├── ops-runbook.md             #   Betriebsprozeduren, Eskalation, SLA
+│   │   └── planning-roadmap.md        #   Meilensteine, Abhängigkeiten, Zeitplan
 │   ├── skills/                        # Verhaltens-Workflows (bei Bedarf geladen)
 │   │   ├── develop/SKILL.md           #   Entwicklung: analysieren → entwerfen → umsetzen → testen → PR
 │   │   ├── deploy/SKILL.md            #   Deployment: Tag → Deploy-Anfrage → Verifizieren
@@ -365,43 +433,10 @@ project-root/
 
 ## Sitzungsstarter
 
-Sobald alle Agenten eingerichtet sind, den gewünschten Agenten auswählen und sofort eine Sitzung starten.
-
 ```bash
-$ ./ai-agency.sh
-
-=== AI Agent Sessions ===
-Found: 8 agent(s)
-
-  1) [PM] project-root
-  2) api-service
-  3) monitoring
-  ...
-
-Select agent (number): 2
-
-=== AI Tool ===
-  1) claude
-  2) codex
-  3) print
-
-Select tool: 1
-
-→ Session started in the api-service directory
-→ Agent automatically loads AGENTS.md and .ai-agents/context/
-→ Ready to work immediately!
-```
-
-**Parallele Ausführung (tmux):**
-
-```bash
-$ ./ai-agency.sh --multi
-
-Select agents: 1,2,3   # PM + API + Monitoring gleichzeitig ausführen
-
-→ 3 tmux sessions open
-→ Different agents work independently in each pane
-→ Switch panes with Ctrl+B N
+./ai-agency.sh                  # Interaktive Agentenauswahl
+./ai-agency.sh --multi          # Mehrere Agenten parallel in tmux starten
+./ai-agency.sh --list           # Alle verfügbaren Agenten anzeigen
 ```
 
 ---
@@ -458,6 +493,10 @@ Ereignisspezifikation geändert        →  event-spec.json aktualisieren
 Geschäftsrichtlinie geändert          →  domain-overview.md aktualisieren
 Externe Integration geändert          →  external-integration.md aktualisieren
 Infrastrukturkonfiguration geändert   →  infra-spec.md aktualisieren
+KPI/OKR-Ziele geändert               →  business-metrics.md aktualisieren
+Teamstruktur geändert                 →  stakeholder-map.md aktualisieren
+Betriebsprozedur geändert             →  ops-runbook.md aktualisieren
+Meilenstein/Roadmap geändert          →  planning-roadmap.md aktualisieren
 ```
 
 > Wird die Aktualisierung versäumt, arbeitet die nächste Sitzung mit **veraltetem Kontext**.
@@ -470,7 +509,7 @@ Infrastrukturkonfiguration geändert   →  infra-spec.md aktualisieren
 ┌──────────────────────────────────────────────────────────────────┐
 │  1. Ersteinrichtung (einmalig)                                   │
 │                                                                  │
-│  KI HOW_TO_AGENTS.md lesen lassen                                │
+│  ./setup.sh ausführen                                            │
 │       │                                                          │
 │       ▼                                                          │
 │  KI analysiert die Projektstruktur                               │
@@ -569,6 +608,7 @@ Phase 1 (Grundlagen)              Phase 2 (Kontext)                  Phase 3 (Be
 | Datei | Zielgruppe | Zweck |
 |---|---|---|
 | `HOW_TO_AGENTS.md` | KI | Meta-Instruktionshandbuch, das Agenten lesen und ausführen |
+| `setup.sh` | Mensch | Interaktives Setup: erkennt Werkzeug, wählt Sprache, führt Generierung durch |
 | `README.md` | Mensch | Dieses Dokument — ein Leitfaden für das menschliche Verständnis |
 | `ai-agency.sh` | Mensch | Agentenauswahl → KI-Sitzungsstarter |
 | `AGENTS.md` (jedes Verzeichnis) | KI | Verzeichnisspezifische Agenten-Identität + Regeln |

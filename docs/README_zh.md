@@ -1,19 +1,78 @@
 🌐 [English](../README.md) | [한국어](README_ko.md) | [日本語](README_ja.md) | [中文](README_zh.md) | [Español](README_es.md) | [Français](README_fr.md) | [Deutsch](README_de.md) | [Русский](README_ru.md) | [हिन्दी](README_hi.md) | [العربية](README_ar.md)
 
+<div align="center">
+
 # ai-initializer
 
-**AI 编程工具的自动项目上下文生成器**
+**一条命令，让任何 AI 智能体立即理解您的项目。**
 
-> 扫描您的项目目录并自动生成
-> `AGENTS.md` + 知识/技能/角色上下文，让 AI 智能体能够立即开始工作。
+（项目扫描 → 生成 AGENTS.md + 上下文 → 任何 AI 工具立即可用）
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../LICENSE)
+
+</div>
+
+---
+
+## 立即体验
+
+此存储库包含预构建的 `AGENTS.md` 和 `.ai-agents/` 文件，可作为示例直接使用。
+克隆后立即运行 `ai-agency.sh`，即可查看实际效果：
+
+```bash
+git clone <this-repo>
+cd agents-initializer
+./ai-agency.sh
+```
 
 ```
-一条命令 → 项目分析 → AGENTS.md 生成 → 适用于任何 AI 工具
+=== AI Agent Sessions ===
+Project: /home/user/agents-initializer
+Found: 2 agent(s)
+
+  1) [PM] ai-initializer                (bg: Warm Brown)
+     Path: ./AGENTS.md
+     Project orchestrator managing all sub-agents
+
+  2) docs                                (bg: Navy)
+     Path: docs/AGENTS.md
+     Documentation specialist
+
+Select agent (number, or 'q' to quit): 1
+
+=== AI Tool ===
+  1) claude  (Claude Code CLI)
+  2) codex   (OpenAI Codex CLI)
+  3) print   (print prompt only — for manual copy)
+
+Select tool (1-3): 1
+
+→ Agent reads AGENTS.md + loads .ai-agents/context/ automatically
+→ Ready to work immediately!
 ```
 
 ---
 
-## 使用方法
+## 应用到您的项目
+
+> **重要：** 请将 `setup.sh` 和 `HOW_TO_AGENTS.md` 复制到**您自己的项目目录**中，然后在那里运行。这些文件会分析目标项目的结构——它们必须位于项目内部。
+
+```bash
+# 1. 将文件复制到您的项目中
+cp setup.sh HOW_TO_AGENTS.md /path/to/your-project/
+
+# 2. 进入您的项目目录
+cd /path/to/your-project/
+
+# 3. 运行设置（扫描项目并生成所有上下文）
+./setup.sh
+
+# 4. 启动 AI 智能体会话
+./ai-agency.sh
+```
+
+<details>
+<summary>手动设置（不使用 setup.sh）</summary>
 
 > **Token 用量提示** — 在初次设置期间，顶级模型会分析整个项目并生成多个文件（AGENTS.md、.ai-agents/context/、.ai-agents/skills/、.ai-agents/roles/）。根据项目规模，这可能消耗数万个 token。这是一次性成本；后续会话将加载预构建的上下文并立即启动。
 
@@ -34,6 +93,8 @@ claude --dangerously-skip-permissions --model claude-opus-4-6 \
 # 2. 使用生成的智能体开始工作
 ./ai-agency.sh
 ```
+
+</details>
 
 ---
 
@@ -204,6 +265,10 @@ project/
 禁止的操作                  数据模型关系                         单个文件内容
 PR/提交格式                 事件发布/订阅规范                     官方框架文档
 隐藏的依赖关系              基础设施拓扑                          导入关系
+                           KPI 目标与业务指标
+                           干系人地图与审批流程
+                           运营手册与升级路径
+                           路线图与里程碑跟踪
 ```
 
 ---
@@ -329,7 +394,11 @@ project-root/
 │   │   ├── api-spec.json              #   API 地图（JSON DSL，节省 3 倍 token）
 │   │   ├── event-spec.json            #   Kafka/MQ 事件规范
 │   │   ├── infra-spec.md              #   Helm chart、网络、部署顺序
-│   │   └── external-integration.md    #   外部 API、认证、速率限制
+│   │   ├── external-integration.md    #   外部 API、认证、速率限制
+│   │   ├── business-metrics.md        #   KPI、OKR、收入模型、成功指标
+│   │   ├── stakeholder-map.md         #   决策者、审批流程、RACI
+│   │   ├── ops-runbook.md             #   运营规程、升级路径、SLA
+│   │   └── planning-roadmap.md        #   里程碑、依赖关系、时间线
 │   ├── skills/                        # 行为工作流程（按需加载）
 │   │   ├── develop/SKILL.md           #   开发：分析 → 设计 → 实现 → 测试 → PR
 │   │   ├── deploy/SKILL.md            #   部署：打标签 → 部署请求 → 验证
@@ -354,43 +423,11 @@ project-root/
 
 ## 会话启动器
 
-所有智能体设置完成后，选择所需的智能体并立即开始会话。
+所有智能体设置完成后，运行 `./ai-agency.sh` 选择智能体并启动会话。
 
 ```bash
-$ ./ai-agency.sh
-
-=== AI Agent Sessions ===
-Found: 8 agent(s)
-
-  1) [PM] project-root
-  2) api-service
-  3) monitoring
-  ...
-
-Select agent (number): 2
-
-=== AI Tool ===
-  1) claude
-  2) codex
-  3) print
-
-Select tool: 1
-
-→ 会话在 api-service 目录中启动
-→ 智能体自动加载 AGENTS.md 和 .ai-agents/context/
-→ 立即准备好工作！
-```
-
-**并行执行（tmux）：**
-
-```bash
-$ ./ai-agency.sh --multi
-
-Select agents: 1,2,3   # 同时运行 PM + API + Monitoring
-
-→ 打开 3 个 tmux 会话
-→ 不同的智能体在每个窗格中独立工作
-→ 使用 Ctrl+B N 切换窗格
+./ai-agency.sh              # 交互式选择智能体 + AI 工具
+./ai-agency.sh --multi      # 并行启动多个智能体（需要 tmux）
 ```
 
 ---
@@ -447,6 +484,10 @@ API 添加/更改/删除     →  更新 api-spec.json
 业务策略更改           →  更新 domain-overview.md
 外部集成更改           →  更新 external-integration.md
 基础设施配置更改       →  更新 infra-spec.md
+KPI/OKR 目标更改       →  更新 business-metrics.md
+团队结构更改           →  更新 stakeholder-map.md
+运营流程更改           →  更新 ops-runbook.md
+里程碑/路线图更改      →  更新 planning-roadmap.md
 ```
 
 > 未能更新意味着下一个会话将**使用过时的上下文工作**。
@@ -459,7 +500,7 @@ API 添加/更改/删除     →  更新 api-spec.json
 ┌──────────────────────────────────────────────────────────────────┐
 │  1. 初始设置（一次性）                                           │
 │                                                                  │
-│  让 AI 读取 HOW_TO_AGENTS.md                                     │
+│  运行 ./setup.sh                                                 │
 │       │                                                          │
 │       ▼                                                          │
 │  AI 分析项目结构                                                 │
@@ -502,7 +543,7 @@ API 添加/更改/删除     →  更新 api-spec.json
 │    - 或由人工指示"这很重要，请记录下来"                          │
 │                                                                  │
 │  添加新服务时：                                                  │
-│    - 重新运行 HOW_TO_AGENTS.md → 自动生成新的 AGENTS.md          │
+│    - 重新运行 ./setup.sh → 自动生成新的 AGENTS.md                │
 │    - 全局规则自动继承                                            │
 │                                                                  │
 │  当 AI 犯错时：                                                  │
@@ -554,6 +595,7 @@ API 添加/更改/删除     →  更新 api-spec.json
 
 | 文件 | 受众 | 用途 |
 |---|---|---|
+| `setup.sh` | 人类 | 一键安装：扫描项目并生成所有上下文文件 |
 | `HOW_TO_AGENTS.md` | AI | 智能体读取并执行的元指令手册 |
 | `README.md` | 人类 | 本文档 — 供人类理解的指南 |
 | `ai-agency.sh` | 人类 | 智能体选择 → AI 会话启动器 |

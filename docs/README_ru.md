@@ -1,39 +1,99 @@
 🌐 [English](../README.md) | [한국어](README_ko.md) | [日本語](README_ja.md) | [中文](README_zh.md) | [Español](README_es.md) | [Français](README_fr.md) | [Deutsch](README_de.md) | [Русский](README_ru.md) | [हिन्दी](README_hi.md) | [العربية](README_ar.md)
 
+<div align="center">
+
 # ai-initializer
 
-**Автоматический генератор контекста проекта для инструментов ИИ-кодирования**
+**Одна команда — и любой ИИ-агент мгновенно понимает ваш проект.**
 
-> Сканирует директорию вашего проекта и автоматически генерирует
-> `AGENTS.md` + контекст знаний/навыков/ролей, чтобы ИИ-агенты могли немедленно приступить к работе.
+Сканирует проект → генерирует `AGENTS.md` + контекст знаний/навыков/ролей
+→ любой ИИ-инструмент начинает работу немедленно, в каждой сессии.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../LICENSE)
+
+</div>
+
+---
+
+## Попробуйте Сейчас
+
+Этот репозиторий содержит готовые файлы `AGENTS.md` и `.ai-agents/` как рабочий пример.
+Клонируйте и запустите `ai-agency.sh` прямо сейчас, чтобы увидеть в действии:
+
+```bash
+git clone <this-repo>
+cd agents-initializer
+./ai-agency.sh
+```
 
 ```
-Одна команда → Анализ проекта → Генерация AGENTS.md → Работает с любым инструментом ИИ
+=== AI Agent Sessions ===
+Project: /home/user/agents-initializer
+Found: 2 agent(s)
+
+  1) [PM] ai-initializer                (bg: Warm Brown)
+     Path: ./AGENTS.md
+     Project orchestrator managing all sub-agents
+
+  2) docs                                (bg: Navy)
+     Path: docs/AGENTS.md
+     Documentation specialist
+
+Select agent (number, or 'q' to quit): 1
+
+=== AI Tool ===
+  1) claude  (Claude Code CLI)
+  2) codex   (OpenAI Codex CLI)
+  3) print   (print prompt only — for manual copy)
+
+Select tool (1-3): 1
+
+→ Agent reads AGENTS.md + loads .ai-agents/context/ automatically
+→ Ready to work immediately!
 ```
 
 ---
 
-## Использование
+## Применить к Вашему Проекту
 
-> **Предупреждение об использовании токенов** — При первоначальной настройке модель высшего уровня анализирует весь проект и генерирует несколько файлов (AGENTS.md, .ai-agents/context/, .ai-agents/skills/, .ai-agents/roles/). Это может потребовать десятки тысяч токенов в зависимости от размера проекта. Это единовременные затраты; последующие сессии загружают предварительно созданный контекст и запускаются мгновенно.
+> **Важно:** Скопируйте `setup.sh` и `HOW_TO_AGENTS.md` в **директорию вашего проекта** и запустите оттуда.
+> Эти файлы анализируют структуру целевого проекта — они должны находиться внутри него.
 
 ```bash
-# 1. Попросите ИИ прочитать HOW_TO_AGENTS.md — он сделает всё остальное
+# 1. Скопируйте файлы в ваш проект
+cp setup.sh HOW_TO_AGENTS.md /path/to/your-project/
+cd /path/to/your-project
+
+# 2. Запустите интерактивную настройку (выбор инструмента и языка, затем автогенерация)
+./setup.sh
+
+# 3. Запустите сессию агента
+./ai-agency.sh
+```
+
+Готово. `setup.sh` сам определит инструменты, выберет язык и запустит полную генерацию.
+
+<details>
+<summary><b>Ручная настройка (без setup.sh)</b></summary>
+
+```bash
+cd /path/to/your-project
 
 # Вариант A: На английском (рекомендуется — меньше токенов, оптимальная производительность ИИ)
 claude --dangerously-skip-permissions --model claude-opus-4-6 \
   "Read HOW_TO_AGENTS.md and generate AGENTS.md tailored to this project"
 
-# Вариант B: На языке пользователя (рекомендуется, если вы планируете редактировать AGENTS.md вручную)
+# Вариант B: На русском
 claude --dangerously-skip-permissions --model claude-opus-4-6 \
-  "HOW_TO_AGENTS.md를 읽고 이 프로젝트에 맞게 AGENTS.md를 생성하라"
+  "Прочитайте HOW_TO_AGENTS.md и создайте AGENTS.md, адаптированный для этого проекта"
 
-# Рекомендуется: --model claude-opus-4-6 (или новее) для наилучших результатов
-# Рекомендуется: --dangerously-skip-permissions для непрерывного автономного выполнения
-
-# 2. Начните работу со сгенерированными агентами
+# Затем запустите сессию агентов
 ./ai-agency.sh
 ```
+
+</details>
+
+> **Предупреждение об использовании токенов:** При первоначальной настройке анализируется весь проект — это может потребовать десятки тысяч токенов. Это единовременные затраты; последующие сессии загружают готовый контекст мгновенно.
 
 ---
 
@@ -210,6 +270,10 @@ project/
 Запрещённые действия           Связи модели данных                     Содержимое отдельных файлов
 Форматы PR/коммитов            Спецификации pub/sub событий            Документация фреймворков
 Скрытые зависимости            Топология инфраструктуры                Связи импортов
+                               Целевые KPI и бизнес-метрики
+                               Карта стейкхолдеров и процессы согласования
+                               Ops-runbook и пути эскалации
+                               Дорожная карта и отслеживание вех
 ```
 
 ---
@@ -338,7 +402,11 @@ project-root/
 │   │   ├── api-spec.json              #   Карта API (JSON DSL, экономия токенов 3x)
 │   │   ├── event-spec.json            #   Спецификации событий Kafka/MQ
 │   │   ├── infra-spec.md              #   Helm-чарты, сеть, порядок деплоя
-│   │   └── external-integration.md    #   Внешние API, аутентификация, лимиты
+│   │   ├── external-integration.md    #   Внешние API, аутентификация, лимиты
+│   │   ├── business-metrics.md        #   KPI, OKR, модель дохода, критерии успеха
+│   │   ├── stakeholder-map.md         #   Лица, принимающие решения, процессы согласования, RACI
+│   │   ├── ops-runbook.md             #   Операционные процедуры, эскалация, SLA
+│   │   └── planning-roadmap.md        #   Вехи, зависимости, временной план
 │   ├── skills/                        # Рабочие процессы поведения (загружаются по требованию)
 │   │   ├── develop/SKILL.md           #   Разработка: анализ → проектирование → реализация → тест → PR
 │   │   ├── deploy/SKILL.md            #   Деплой: тег → запрос на деплой → проверка
@@ -363,44 +431,20 @@ project-root/
 
 ## Лаунчер сессий
 
-После настройки всех агентов выберите нужного агента и сразу запустите сессию.
+После настройки запустите `./ai-agency.sh` для интерактивного выбора агента и инструмента.
 
 ```bash
-$ ./ai-agency.sh
-
-=== AI Agent Sessions ===
-Found: 8 agent(s)
-
-  1) [PM] project-root
-  2) api-service
-  3) monitoring
-  ...
-
-Select agent (number): 2
-
-=== AI Tool ===
-  1) claude
-  2) codex
-  3) print
-
-Select tool: 1
-
-→ Session started in the api-service directory
-→ Agent automatically loads AGENTS.md and .ai-agents/context/
-→ Ready to work immediately!
+./ai-agency.sh                  # Интерактивный выбор агента и инструмента ИИ
+./ai-agency.sh --multi          # Параллельный запуск нескольких агентов в tmux
 ```
 
-**Параллельное выполнение (tmux):**
+Флаги:
 
-```bash
-$ ./ai-agency.sh --multi
-
-Select agents: 1,2,3   # Запустить PM + API + Monitoring одновременно
-
-→ 3 tmux sessions open
-→ Different agents work independently in each pane
-→ Switch panes with Ctrl+B N
-```
+| Флаг | Описание |
+|---|---|
+| `--multi` | Открыть несколько tmux-сессий одновременно (PM + API + Monitoring и т.д.) |
+| `--tool <name>` | Указать инструмент ИИ напрямую (`claude`, `codex`, `print`) |
+| `--agent <n>` | Указать номер агента без интерактивного меню |
 
 ---
 
@@ -456,6 +500,10 @@ Select agents: 1,2,3   # Запустить PM + API + Monitoring одновре
 Изменена бизнес-политика             →  Обновить domain-overview.md
 Изменена внешняя интеграция          →  Обновить external-integration.md
 Изменена конфигурация инфраструктуры →  Обновить infra-spec.md
+Изменены целевые KPI/OKR             →  Обновить business-metrics.md
+Изменена структура команды           →  Обновить stakeholder-map.md
+Изменена операционная процедура      →  Обновить ops-runbook.md
+Изменены вехи/дорожная карта         →  Обновить planning-roadmap.md
 ```
 
 > Если не обновить, следующая сессия будет **работать с устаревшим контекстом**.
@@ -468,7 +516,10 @@ Select agents: 1,2,3   # Запустить PM + API + Monitoring одновре
 ┌──────────────────────────────────────────────────────────────────┐
 │  1. Первоначальная настройка (один раз)                          │
 │                                                                  │
-│  Попросить ИИ прочитать HOW_TO_AGENTS.md                         │
+│  Запустить ./setup.sh → Выбрать инструмент и язык                │
+│       │                                                          │
+│       ▼                                                          │
+│  ИИ читает HOW_TO_AGENTS.md автоматически                        │
 │       │                                                          │
 │       ▼                                                          │
 │  ИИ анализирует структуру проекта                                │
@@ -567,6 +618,7 @@ Select agents: 1,2,3   # Запустить PM + API + Monitoring одновре
 | Файл | Аудитория | Назначение |
 |---|---|---|
 | `HOW_TO_AGENTS.md` | ИИ | Мета-инструкция, которую агенты читают и выполняют |
+| `setup.sh` | Человек | Интерактивная настройка: определение инструментов, выбор языка, автогенерация |
 | `README.md` | Человек | Этот документ — руководство для людей |
 | `ai-agency.sh` | Человек | Выбор агента → Лаунчер сессий ИИ |
 | `AGENTS.md` (каждая директория) | ИИ | Идентичность + правила агента для директории |

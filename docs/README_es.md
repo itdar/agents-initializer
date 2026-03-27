@@ -1,25 +1,83 @@
 🌐 [English](../README.md) | [한국어](README_ko.md) | [日本語](README_ja.md) | [中文](README_zh.md) | [Español](README_es.md) | [Français](README_fr.md) | [Deutsch](README_de.md) | [Русский](README_ru.md) | [हिन्दी](README_hi.md) | [العربية](README_ar.md)
 
+<div align="center">
+
 # ai-initializer
 
-**Generador automático de contexto de proyecto para herramientas de codificación con IA**
+**Un comando para dar a cualquier agente IA comprensión instantánea del proyecto.**
 
-> Escanea el directorio de tu proyecto y genera automáticamente
-> `AGENTS.md` + contexto de conocimiento/habilidades/roles para que los agentes de IA puedan empezar a trabajar de inmediato.
+(scan → AGENTS.md + contexto → cualquier herramienta IA funciona inmediatamente)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../LICENSE)
+
+</div>
+
+---
+
+## Pruébalo Ahora
+
+Este repositorio incluye archivos `AGENTS.md` y `.ai-agents/` preconfigurados como ejemplo funcional.
+Clona el repositorio y ejecuta `ai-agency.sh` de inmediato para verlo en acción:
+
+```bash
+git clone <this-repo>
+cd agents-initializer
+./ai-agency.sh
+```
 
 ```
-Un comando → Análisis del proyecto → Generación de AGENTS.md → Funciona con cualquier herramienta de IA
+=== AI Agent Sessions ===
+Project: /home/user/agents-initializer
+Found: 2 agent(s)
+
+  1) [PM] ai-initializer                (bg: Warm Brown)
+     Path: ./AGENTS.md
+     Project orchestrator managing all sub-agents
+
+  2) docs                                (bg: Navy)
+     Path: docs/AGENTS.md
+     Documentation specialist
+
+Select agent (number, or 'q' to quit): 1
+
+=== AI Tool ===
+  1) claude  (Claude Code CLI)
+  2) codex   (OpenAI Codex CLI)
+  3) print   (print prompt only — for manual copy)
+
+Select tool (1-3): 1
+
+→ Agent reads AGENTS.md + loads .ai-agents/context/ automatically
+→ Ready to work immediately!
 ```
 
 ---
 
-## Uso
+## Aplicar a Tu Proyecto
+
+> **Importante:** Copia `setup.sh` y `HOW_TO_AGENTS.md` al directorio de tu propio proyecto antes de ejecutar.
+
+```bash
+# Copia los archivos de configuración a tu proyecto
+cp /ruta/a/agents-initializer/setup.sh tu-proyecto/
+cp /ruta/a/agents-initializer/HOW_TO_AGENTS.md tu-proyecto/
+
+# Ve al directorio de tu proyecto
+cd tu-proyecto
+
+# Ejecuta la configuración inicial (una sola vez)
+./setup.sh
+
+# Inicia una sesión de agente
+./ai-agency.sh
+```
+
+<details>
+<summary>Configuración manual (sin setup.sh)</summary>
 
 > **Aviso sobre consumo de tokens** — Durante la configuración inicial, un modelo de primer nivel analiza todo el proyecto y genera múltiples archivos (AGENTS.md, .ai-agents/context/, .ai-agents/skills/, .ai-agents/roles/). Esto puede consumir decenas de miles de tokens dependiendo del tamaño del proyecto. Este es un costo único; las sesiones posteriores cargan el contexto preconstruido e inician instantáneamente.
 
 ```bash
-# 1. Haz que la IA lea HOW_TO_AGENTS.md y se encargará del resto
-
 # Opción A: Inglés (recomendado — menor costo de tokens, rendimiento óptimo de la IA)
 claude --dangerously-skip-permissions --model claude-opus-4-6 \
   "Read HOW_TO_AGENTS.md and generate AGENTS.md tailored to this project"
@@ -31,9 +89,11 @@ claude --dangerously-skip-permissions --model claude-opus-4-6 \
 # Recomendado: --model claude-opus-4-6 (o posterior) para mejores resultados
 # Recomendado: --dangerously-skip-permissions para ejecución autónoma sin interrupciones
 
-# 2. Comienza a trabajar con los agentes generados
+# Comienza a trabajar con los agentes generados
 ./ai-agency.sh
 ```
+
+</details>
 
 ---
 
@@ -212,6 +272,10 @@ Convenciones del equipo           Mapa completo de APIs                       Es
 Acciones prohibidas               Relaciones del modelo de datos              Contenido de archivos individuales
 Formatos de PR/commits            Especificaciones de eventos pub/sub         Documentación oficial del framework
 Dependencias ocultas              Topología de infraestructura                Relaciones de importación
+                                  Objetivos KPI y métricas de negocio
+                                  Mapa de stakeholders y flujos de aprobación
+                                  Runbooks operativos y rutas de escalación
+                                  Hoja de ruta y seguimiento de hitos
 ```
 
 ---
@@ -339,7 +403,11 @@ project-root/
 │   │   ├── api-spec.json              #   Mapa de APIs (JSON DSL, 3x ahorro de tokens)
 │   │   ├── event-spec.json            #   Especificaciones de eventos Kafka/MQ
 │   │   ├── infra-spec.md              #   Charts de Helm, redes, orden de despliegue
-│   │   └── external-integration.md    #   APIs externas, autenticación, límites de tasa
+│   │   ├── external-integration.md    #   APIs externas, autenticación, límites de tasa
+│   │   ├── business-metrics.md        #   KPIs, OKRs, modelo de ingresos, criterios de éxito
+│   │   ├── stakeholder-map.md         #   Decisores, flujos de aprobación, RACI
+│   │   ├── ops-runbook.md             #   Procedimientos operativos, escalación, SLA
+│   │   └── planning-roadmap.md        #   Hitos, dependencias, cronograma
 │   ├── skills/                        # Flujos de trabajo de comportamiento (se cargan bajo demanda)
 │   │   ├── develop/SKILL.md           #   Desarrollo: analizar → diseñar → implementar → probar → PR
 │   │   ├── deploy/SKILL.md            #   Despliegue: tag → solicitud de despliegue → verificar
@@ -364,43 +432,11 @@ project-root/
 
 ## Lanzador de sesiones
 
-Una vez que todos los agentes están configurados, elige el agente deseado e inicia una sesión de inmediato.
-
 ```bash
-$ ./ai-agency.sh
-
-=== Sesiones de Agentes IA ===
-Encontrados: 8 agente(s)
-
-  1) [PM] project-root
-  2) api-service
-  3) monitoring
-  ...
-
-Seleccionar agente (número): 2
-
-=== Herramienta de IA ===
-  1) claude
-  2) codex
-  3) print
-
-Seleccionar herramienta: 1
-
-→ Sesión iniciada en el directorio api-service
-→ El agente carga automáticamente AGENTS.md y .ai-agents/context/
-→ ¡Listo para trabajar de inmediato!
-```
-
-**Ejecución en paralelo (tmux):**
-
-```bash
-$ ./ai-agency.sh --multi
-
-Seleccionar agentes: 1,2,3   # Ejecutar PM + API + Monitoring simultáneamente
-
-→ 3 sesiones tmux abiertas
-→ Diferentes agentes trabajan independientemente en cada panel
-→ Cambiar de panel con Ctrl+B N
+./ai-agency.sh                  # Menú interactivo: seleccionar agente + herramienta de IA
+./ai-agency.sh --multi          # Ejecutar múltiples agentes en paralelo (tmux)
+./ai-agency.sh --agent api      # Lanzar directamente el agente especificado
+./ai-agency.sh --tool codex     # Usar herramienta de IA específica (claude, codex, etc.)
 ```
 
 ---
@@ -457,6 +493,10 @@ Especificación de eventos cambiada →  Actualizar event-spec.json
 Política de negocio cambiada      →  Actualizar domain-overview.md
 Integración externa cambiada      →  Actualizar external-integration.md
 Configuración de infra cambiada   →  Actualizar infra-spec.md
+Objetivos KPI/OKR cambiados       →  Actualizar business-metrics.md
+Estructura del equipo cambiada    →  Actualizar stakeholder-map.md
+Procedimiento operativo cambiado  →  Actualizar ops-runbook.md
+Hito/hoja de ruta cambiado        →  Actualizar planning-roadmap.md
 ```
 
 > No actualizar significa que la próxima sesión **trabajará con contexto desactualizado**.
@@ -469,7 +509,8 @@ Configuración de infra cambiada   →  Actualizar infra-spec.md
 ┌──────────────────────────────────────────────────────────────────┐
 │  1. Configuración inicial (una sola vez)                         │
 │                                                                  │
-│  Haz que la IA lea HOW_TO_AGENTS.md                              │
+│  Ejecutar ./setup.sh                                             │
+│  (lee HOW_TO_AGENTS.md y genera todo automáticamente)            │
 │       │                                                          │
 │       ▼                                                          │
 │  La IA analiza la estructura del proyecto                        │
@@ -573,6 +614,7 @@ Fase 1 (Básicos)               Fase 2 (Contexto)                Fase 3 (Operaci
 |---|---|---|
 | `HOW_TO_AGENTS.md` | IA | Manual de meta-instrucciones que los agentes leen y ejecutan |
 | `README.md` | Humano | Este documento — una guía para comprensión humana |
+| `setup.sh` | Humano | Configuración inicial automatizada — genera AGENTS.md y contexto |
 | `ai-agency.sh` | Humano | Selección de agente → Lanzador de sesiones de IA |
 | `AGENTS.md` (cada directorio) | IA | Identidad del agente + reglas por directorio |
 | `.ai-agents/context/*.md/json` | IA | Conocimiento de dominio preorganizado |
