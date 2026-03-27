@@ -42,16 +42,16 @@ claude --dangerously-skip-permissions --model claude-opus-4-6 \
 ### Das Problem: KI Verliert Jede Sitzung Ihr Gedächtnis
 
 ```
- Sitzung 1               Sitzung 2               Sitzung 3
-┌──────────┐             ┌──────────┐             ┌──────────┐
+ Sitzung 1                Sitzung 2                Sitzung 3
+┌───────────┐             ┌───────────┐             ┌───────────┐
 │ KI liest  │             │ KI liest  │             │ Von vorne │
 │ gesamte   │  Sitzung    │ gesamte   │  Sitzung    │ anfangen  │
 │ Codebasis │  endet      │ Codebasis │  endet      │           │
-│ (30 Min.) │ ──────→    │ (30 Min.) │ ──────→    │ (30 Min.) │
-│ Beginnt   │ Gedächtnis │ Beginnt   │ Gedächtnis │ Beginnt   │
-│ zu ar-    │ verloren!  │ zu ar-    │ verloren!  │ zu ar-    │
+│ (30 Min.) │ ──────→     │ (30 Min.) │ ──────→     │ (30 Min.) │
+│ Beginnt   │ Gedächtnis  │ Beginnt   │ Gedächtnis  │ Beginnt   │
+│ zu ar-    │ verloren!   │ zu ar-    │ verloren!   │ zu ar-    │
 │ beiten    │             │ beiten    │             │ beiten    │
-└──────────┘             └──────────┘             └──────────┘
+└───────────┘             └───────────┘             └───────────┘
 ```
 
 KI-Agenten vergessen alles, wenn eine Sitzung endet. Jedes Mal verbringen sie Zeit damit, die Projektstruktur zu verstehen, APIs zu analysieren und Konventionen zu erlernen.
@@ -73,7 +73,7 @@ KI-Agenten vergessen alles, wenn eine Sitzung endet. Jedes Mal verbringen sie Ze
 │       │                                          │
 │       ▼                                          │
 │  „Ich bin der Backend-Experte für diesen Dienst" │
-│  „Konventionen: Conventional Commits, TypeScript  │
+│  „Konventionen: Conventional Commits, TypeScript │
 │   strict"                                        │
 │  „Verboten: andere Dienste ändern,               │
 │   Geheimnisse hardcoden"                         │
@@ -102,7 +102,7 @@ KI-Agenten vergessen alles, wenn eine Sitzung endet. Jedes Mal verbringen sie Ze
 
      ┌──────────┐  ┌──────────┐  ┌──────────┐
      │ AGENTS.md│  │.ai-agents│  │.ai-agents│
-     │          │  │ /context/ │  │ /skills/ │
+     │          │  │ /context/│  │ /skills/ │
      │ Identität│  │ Wissen   │  │ Verhalten│
      │ „Wer     │  │ „Was     │  │ „Wie     │
      │  bin     │  │  weiß    │  │  arbeite │
@@ -520,7 +520,7 @@ Infrastrukturkonfiguration geändert   →  infra-spec.md aktualisieren
 │    - Globale Regeln werden automatisch geerbt                    │
 │                                                                  │
 │  Wenn die KI Fehler macht:                                       │
-│    - „Das nochmal analysieren" → Hinweise geben → Wenn verstanden,│
+│    - „Das nochmal analysieren" → Hinweise geben → Wenn verstanden│
 │      .ai-agents/context/ aktualisieren                           │
 │    - Diese Feedback-Schleife verbessert die Kontextqualität      │
 │                                                                  │

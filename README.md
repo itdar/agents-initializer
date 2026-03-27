@@ -44,13 +44,13 @@ claude --dangerously-skip-permissions --model claude-opus-4-6 \
 ```
  Session 1                  Session 2                  Session 3
 ┌──────────┐             ┌──────────┐             ┌──────────┐
-│ AI reads  │             │ AI reads  │             │ Starting  │
-│ entire    │  Session    │ entire    │  Session    │ from      │
-│ codebase  │  ends       │ codebase  │  ends       │ scratch   │
-│ (30 min)  │ ──────→    │ (30 min)  │ ──────→    │ again     │
-│ Starts    │ Memory     │ Starts    │ Memory     │ (30 min)  │
-│ working   │ lost!      │ working   │ lost!      │ Starts    │
-│           │             │           │             │ working   │
+│ AI reads │             │ AI reads │             │ Starting │
+│ entire   │  Session    │ entire   │  Session    │ from     │
+│ codebase │  ends       │ codebase │  ends       │ scratch  │
+│ (30 min) │ ──────→     │ (30 min) │ ──────→     │ again    │
+│ Starts   │ Memory      │ Starts   │ Memory      │ (30 min) │
+│ working  │ lost!       │ working  │ lost!       │ Starts   │
+│          │             │          │             │ working  │
 └──────────┘             └──────────┘             └──────────┘
 ```
 
@@ -73,7 +73,7 @@ AI agents forget everything when a session ends. Every time, they spend time und
 │       │                                          │
 │       ▼                                          │
 │  "I am the backend expert for this service"      │
-│  "Conventions: Conventional Commits, TypeScript   │
+│  "Conventions: Conventional Commits, TypeScript  │
 │   strict"                                        │
 │  "Prohibited: modifying other services,          │
 │   hardcoding secrets"                            │
@@ -102,7 +102,7 @@ AI agents forget everything when a session ends. Every time, they spend time und
 
      ┌──────────┐  ┌──────────┐  ┌──────────┐
      │ AGENTS.md│  │.ai-agents│  │.ai-agents│
-     │          │  │ /context/ │  │ /skills/ │
+     │          │  │ /context/│  │ /skills/ │
      │ Identity │  │ Knowledge│  │ Behavior │
      │ "Who     │  │ "What    │  │ "How     │
      │  am I?"  │  │  do I    │  │  do I    │
@@ -271,7 +271,7 @@ Root AGENTS.md ─────────────────────�
 │   rules specified)     │     rules specified)     │
 │  "This service uses    │    "When changing Helm   │
 │   Python"              │     values, Ask First"   │
-└─────────────────────────┴──────────────────────────
+└────────────────────────┴───────────────────────────
 ```
 
 **Benefits:**

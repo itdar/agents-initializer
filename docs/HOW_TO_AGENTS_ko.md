@@ -913,13 +913,13 @@ cat "$AGENTS" >> .cursor/rules/project.mdc
 ┌──────────────────────────────────────────┐
 │  루트 PM Agent (AGENTS.md)                │
 │  Global Conventions + 위임 규칙            │
-│  설계 검증이 코드 검증보다 중요!               │
+│  설계 검증이 코드 검증보다 중요!                │
 └────────┬─────────┬─────────┬─────────────┘
          │         │         │  작업 위임
-    ┌────▼───┐ ┌───▼───┐ ┌──▼────┐
-    │서비스 A │ │인프라   │ │문서    │  각 디렉토리 Agent
-    │전문가   │ │SRE    │ │기획자  │  (Global Conventions 상속)
-    └────────┘ └───────┘ └───────┘
+    ┌────▼────┐ ┌───▼───┐ ┌──▼─────┐
+    │서비스 A   │ │인프라  │ │문서     │  각 디렉토리 Agent
+    │전문가     │ │SRE    │ │기획자   │  (Global Conventions 상속)
+    └─────────┘ └───────┘ └────────┘
 ```
 
 **위임 프로토콜:**
@@ -932,9 +932,9 @@ cat "$AGENTS" >> .cursor/rules/project.mdc
 ```
 Phase 1 (기본)              Phase 2 (컨텍스트)           Phase 3 (운용)
 ──────────────             ──────────────────         ──────────────
-☐ AGENTS.md 생성           ☐ .ai-agents/context/ 생성         ☐ .ai-agents/roles/ 정의
-☐ 빌드/테스트 명령            ☐ domain-overview.md       ☐ ai-agent-session.sh
-☐ 컨벤션, 금지사항            ☐ api-spec.json (DSL)      ☐ 멀티에이전트 세션
-☐ Global Conventions       ☐ data-model.md            ☐ .ai-agents/skills/ 워크플로
-☐ 도구별 포워더              ☐ 최신화 규칙 설정             ☐ 반복 피드백 루프
+☐ AGENTS.md 생성           ☐ .ai-agents/context/ 생성     ☐ .ai-agents/roles/ 정의
+☐ 빌드/테스트 명령            ☐ domain-overview.md          ☐ ai-agent-session.sh
+☐ 컨벤션, 금지사항            ☐ api-spec.json (DSL)         ☐ 멀티에이전트 세션
+☐ Global Conventions       ☐ data-model.md               ☐ .ai-agents/skills/ 워크플로
+☐ 도구별 포워더              ☐ 최신화 규칙 설정                 ☐ 반복 피드백 루프
 ```

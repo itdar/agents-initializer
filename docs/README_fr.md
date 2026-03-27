@@ -42,16 +42,16 @@ claude --dangerously-skip-permissions --model claude-opus-4-6 \
 ### Le problème : l'IA perd sa mémoire à chaque session
 
 ```
- Session 1                  Session 2                  Session 3
-┌──────────┐             ┌──────────┐             ┌──────────┐
-│ L'IA lit  │             │ L'IA lit  │             │ Repart   │
-│ tout le   │  Session    │ tout le   │  Session    │ de zéro  │
-│ code      │  terminée   │ code      │  terminée   │          │
-│ (30 min)  │ ──────→    │ (30 min)  │ ──────→    │ (30 min) │
-│ Commence  │ Mémoire    │ Commence  │ Mémoire    │ Commence  │
-│ à         │ perdue !   │ à         │ perdue !   │ à         │
-│ travailler│             │ travailler│             │ travailler│
-└──────────┘             └──────────┘             └──────────┘
+ Session 1                    Session 2                    Session 3
+┌────────────┐             ┌────────────┐             ┌────────────┐
+│ L'IA lit   │             │ L'IA lit   │             │ Repart     │
+│ tout le    │  Session    │ tout le    │  Session    │ de zéro    │
+│ code       │  terminée   │ code       │  terminée   │            │
+│ (30 min)   │ ──────→     │ (30 min)   │ ──────→     │ (30 min)   │
+│ Commence   │ Mémoire     │ Commence   │ Mémoire     │ Commence   │
+│ à          │ perdue !    │ à          │ perdue !    │ à          │
+│ travailler │             │ travailler │             │ travailler │
+└────────────┘             └────────────┘             └────────────┘
 ```
 
 Les agents IA oublient tout à la fin d'une session. À chaque fois, ils passent du temps à comprendre la structure du projet, analyser les API et apprendre les conventions.
@@ -102,12 +102,12 @@ Les agents IA oublient tout à la fin d'une session. À chaque fois, ils passent
 
      ┌──────────┐  ┌──────────┐  ┌──────────┐
      │ AGENTS.md│  │.ai-agents│  │.ai-agents│
-     │          │  │ /context/ │  │ /skills/ │
+     │          │  │ /context/│  │ /skills/ │
      │ Identité │  │ Connais- │  │Comportem.│
      │ « Qui    │  │ sances   │  │ « Comment│
      │  suis-je?│  │ « Que    │  │  est-ce  │
      │        » │  │  sais-je?│  │  que je  │
-     │ + Règles │  │        » │  │  travaille│
+     │ + Règles │  │        » │  │ travaille│
      │ + Perms  │  │ + Domaine│  │        » │
      │ + Chemins│  │ + Modèles│  │ + Déploie│
      └──────────┘  └──────────┘  └──────────┘

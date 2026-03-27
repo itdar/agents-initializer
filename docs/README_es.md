@@ -42,16 +42,16 @@ claude --dangerously-skip-permissions --model claude-opus-4-6 \
 ### El problema: La IA pierde su memoria en cada sesión
 
 ```
- Sesión 1                  Sesión 2                  Sesión 3
-┌──────────┐             ┌──────────┐             ┌──────────┐
-│ La IA lee │             │ La IA lee │             │ Empezando │
-│ todo el   │  La sesión  │ todo el   │  La sesión  │ desde     │
-│ código    │  termina    │ código    │  termina    │ cero      │
-│ (30 min)  │ ──────→    │ (30 min)  │ ──────→    │ otra vez  │
-│ Empieza   │ ¡Memoria   │ Empieza   │ ¡Memoria   │ (30 min)  │
-│ a         │ perdida!   │ a         │ perdida!   │ Empieza   │
-│ trabajar  │             │ trabajar  │             │ a trabajar│
-└──────────┘             └──────────┘             └──────────┘
+ Sesión 1                   Sesión 2                   Sesión 3
+┌────────────┐             ┌────────────┐             ┌────────────┐
+│ La IA lee  │             │ La IA lee  │             │ Empezando  │
+│ todo el    │  La sesión  │ todo el    │  La sesión  │ desde      │
+│ código     │  termina    │ código     │  termina    │ cero       │
+│ (30 min)   │ ──────→     │ (30 min)   │ ──────→     │ otra vez   │
+│ Empieza    │ ¡Memoria    │ Empieza    │ ¡Memoria    │ (30 min)   │
+│ a          │ perdida!    │ a          │ perdida!    │ Empieza    │
+│ trabajar   │             │ trabajar   │             │ a trabajar │
+└────────────┘             └────────────┘             └────────────┘
 ```
 
 Los agentes de IA olvidan todo cuando termina una sesión. Cada vez, gastan tiempo entendiendo la estructura del proyecto, analizando APIs y aprendiendo convenciones.
@@ -102,10 +102,10 @@ Los agentes de IA olvidan todo cuando termina una sesión. Cada vez, gastan tiem
 
      ┌──────────┐  ┌──────────┐  ┌──────────┐
      │ AGENTS.md│  │.ai-agents│  │.ai-agents│
-     │          │  │ /context/ │  │ /skills/ │
+     │          │  │ /context/│  │ /skills/ │
      │ Identidad│  │Conocimien│  │Comporta- │
      │ "¿Quién  │  │ "¿Qué    │  │ "¿Cómo   │
-     │  soy?"   │  │  sé?"    │  │  trabajo?"│
+     │  soy?"   │  │  sé?"    │  │ trabajo?"│
      │          │  │          │  │          │
      │ + Reglas │  │ + Dominio│  │ + Deploy │
      │ + Perms  │  │ + Modelos│  │ + Review │
@@ -481,7 +481,7 @@ Configuración de infra cambiada   →  Actualizar infra-spec.md
 │   + permisos)                       modelo, eventos)             │
 │                                                                  │
 │  Define flujos de trabajo en       Define roles en               │
-│  .ai-agents/skills/               .ai-agents/roles/             │
+│  .ai-agents/skills/               .ai-agents/roles/              │
 │  (procedimientos de desarrollo,    (Backend, Frontend, SRE)      │
 │   despliegue, revisión)                                          │
 │                                                                  │
@@ -494,10 +494,10 @@ Configuración de infra cambiada   →  Actualizar infra-spec.md
 │  Ejecutar ./ai-agency.sh                                         │
 │       │                                                          │
 │       ▼                                                          │
-│  Seleccionar agente (¿PM? ¿Backend? ¿SRE?)                      │
+│  Seleccionar agente (¿PM? ¿Backend? ¿SRE?)                       │
 │       │                                                          │
 │       ▼                                                          │
-│  Seleccionar herramienta de IA (¿Claude? ¿Codex? ¿Cursor?)      │
+│  Seleccionar herramienta de IA (¿Claude? ¿Codex? ¿Cursor?)       │
 │       │                                                          │
 │       ▼                                                          │
 │  Sesión inicia → AGENTS.md cargado automáticamente →             │
@@ -516,7 +516,7 @@ Configuración de infra cambiada   →  Actualizar infra-spec.md
 │  Al agregar un nuevo servicio:                                   │
 │    - Ejecutar HOW_TO_AGENTS.md de nuevo → Nuevo AGENTS.md        │
 │      generado automáticamente                                    │
-│    - Las reglas globales se heredan automáticamente               │
+│    - Las reglas globales se heredan automáticamente              │
 │                                                                  │
 │  Cuando la IA comete errores:                                    │
 │    - "Reanaliza esto" → Dar pistas → Una vez que entienda,       │
