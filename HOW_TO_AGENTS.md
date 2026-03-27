@@ -13,7 +13,7 @@
 
 ## Part A: Execution Instructions
 
-Execute the following 6 steps in order.
+Execute the following 7 steps in order.
 
 ### Step 1: Directory Structure Scan
 
@@ -25,6 +25,43 @@ For each directory:
   - Record the subdirectory structure
   - If meta files such as README.md, package.json exist, read their contents
 ```
+
+### Step 1.5: Existing Vendor Context Absorption
+
+Before generating AGENTS.md, scan for existing AI tool configuration files and extract their knowledge.
+This ensures that conventions, rules, and domain knowledge already captured in vendor-specific files are not lost — they are merged into the vendor-neutral AGENTS.md + `.ai-agents/context/` system.
+
+**Scan targets (read if they exist):**
+
+| File / Directory | Tool |
+|---|---|
+| `CLAUDE.md` | Claude Code |
+| `.claude/settings.json` | Claude Code |
+| `.cursor/rules/*.mdc` | Cursor |
+| `.github/copilot-instructions.md` | GitHub Copilot |
+| `.windsurfrules` | Windsurf |
+| `.aider.conf.yml` | Aider |
+| `AGENTS.md` (pre-existing) | Codex / manual |
+
+**Extract and classify content from each file into:**
+
+| Category | Merge Target | Examples |
+|---|---|---|
+| Conventions | Root `AGENTS.md` → Global Conventions | Commit format, branch naming, PR rules, code style |
+| Permissions / Prohibitions | Root `AGENTS.md` → Global Permissions | "Never push to main", "Ask before changing DB schema" |
+| Domain knowledge | `.ai-agents/context/domain-overview.md` | Business rules, service descriptions, architecture notes |
+| API / technical specs | `.ai-agents/context/api-spec.json` etc. | API endpoints, data models, infra details |
+| Workflow procedures | `.ai-agents/skills/` | Deploy procedures, review checklists |
+| Tool-specific settings | Discard (not portable) | Model preferences, IDE keybindings, plugin configs |
+
+**Rules:**
+- Do NOT blindly copy — analyze, deduplicate, and organize into the appropriate AGENTS.md sections
+- If a convention appears in multiple vendor files, keep one canonical version in Global Conventions
+- If domain knowledge conflicts between files, prefer the most detailed version and mark conflicts with `<!-- VENDOR MERGE CONFLICT: {details} -->`
+- Tool-specific settings (model names, IDE shortcuts, plugin configs) are NOT portable — discard them
+- After AGENTS.md generation is complete, vendor files will be converted to bootstrap indexes (see Step 7)
+
+**If no vendor files exist:** Skip this step entirely.
 
 ### Step 2: Automatic Directory Type Classification
 
@@ -544,6 +581,49 @@ Team structure changed       → update stakeholder-map.md
 Operational procedure changed → update ops-runbook.md
 Milestone/roadmap changed    → update planning-roadmap.md
 ```
+
+### Step 7: Convert Vendor Files to Bootstrap Indexes
+
+If Step 1.5 absorbed content from existing vendor files, those files now contain knowledge that has been merged into AGENTS.md + `.ai-agents/context/`. Replace the absorbed content with a lightweight bootstrap index that points to AGENTS.md.
+
+**For each vendor file that was absorbed:**
+
+1. **Back up** the original content as a comment or in a separate `.bak` file (so nothing is lost)
+2. **Replace** the file contents with the bootstrap directive only
+3. **Preserve** any tool-specific settings that are NOT portable (they stay in the vendor file)
+
+**Example — CLAUDE.md transformation:**
+
+Before (absorbed):
+```markdown
+# Project Guidelines
+## Conventions
+- Use Conventional Commits (feat:, fix:, chore:)
+- Never push directly to main
+## Domain
+- This is an order management service...
+## Code Style
+- TypeScript strict mode
+- ESLint + Prettier
+```
+
+After (bootstrap index):
+```markdown
+## Session Start
+At the start of every session, read `AGENTS.md` (project root) and follow its instructions.
+If `.ai-agents/context/` exists, load the files listed in the Context Files section of AGENTS.md.
+
+<!-- Original content absorbed into AGENTS.md + .ai-agents/context/ -->
+<!-- Backup: CLAUDE.md.pre-agents.bak -->
+```
+
+**Rules:**
+- Only convert files whose content was actually absorbed in Step 1.5
+- If a vendor file has NO useful content to absorb (e.g., only tool-specific settings), leave it unchanged and only append the bootstrap directive
+- Create `.bak` files in the project root with the pattern `{filename}.pre-agents.bak`
+- Add `.pre-agents.bak` entries to `.gitignore` if it exists (backups are local-only)
+
+**If Step 1.5 was skipped (no vendor files existed):** Skip this step. Vendor bootstraps will be generated fresh by the bootstrap generator in Part D.
 
 ---
 

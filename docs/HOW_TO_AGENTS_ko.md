@@ -13,7 +13,7 @@
 
 ## Part A: 실행 지침
 
-아래 6단계를 순서대로 실행하라.
+아래 7단계를 순서대로 실행하라.
 
 ### 1단계: 디렉토리 구조 스캔
 
@@ -25,6 +25,43 @@
   - 하위 디렉토리 구조를 기록한다
   - README.md, package.json 등 메타 파일이 있으면 내용을 읽는다
 ```
+
+### 1.5단계: 기존 벤더 컨텍스트 흡수
+
+AGENTS.md를 생성하기 전에, 기존 AI 도구 설정 파일을 스캔하여 지식을 추출한다.
+벤더 파일에 이미 기록된 컨벤션, 규칙, 도메인 지식이 벤더 중립적인 AGENTS.md + `.ai-agents/context/` 체계로 통합되도록 한다.
+
+**스캔 대상 (존재하면 읽기):**
+
+| 파일 / 디렉토리 | 도구 |
+|---|---|
+| `CLAUDE.md` | Claude Code |
+| `.claude/settings.json` | Claude Code |
+| `.cursor/rules/*.mdc` | Cursor |
+| `.github/copilot-instructions.md` | GitHub Copilot |
+| `.windsurfrules` | Windsurf |
+| `.aider.conf.yml` | Aider |
+| `AGENTS.md` (기존 존재) | Codex / 수동 작성 |
+
+**추출한 내용을 아래 기준으로 분류 후 병합:**
+
+| 분류 | 병합 대상 | 예시 |
+|---|---|---|
+| 컨벤션 | 루트 `AGENTS.md` → 글로벌 컨벤션 | 커밋 형식, 브랜치 네이밍, PR 규칙, 코드 스타일 |
+| 권한 / 금지사항 | 루트 `AGENTS.md` → 글로벌 권한 | "main 직접 푸시 금지", "DB 스키마 변경 시 확인 필요" |
+| 도메인 지식 | `.ai-agents/context/domain-overview.md` | 비즈니스 규칙, 서비스 설명, 아키텍처 노트 |
+| API / 기술 스펙 | `.ai-agents/context/api-spec.json` 등 | API 엔드포인트, 데이터 모델, 인프라 정보 |
+| 워크플로 절차 | `.ai-agents/skills/` | 배포 절차, 리뷰 체크리스트 |
+| 도구 전용 설정 | 폐기 (이식 불가) | 모델 설정, IDE 단축키, 플러그인 설정 |
+
+**규칙:**
+- 맹목적으로 복사하지 않는다 — 분석, 중복 제거, 적절한 AGENTS.md 섹션에 정리한다
+- 여러 벤더 파일에 동일한 컨벤션이 있으면, 글로벌 컨벤션에 하나의 정규 버전만 유지한다
+- 도메인 지식이 파일 간에 충돌하면, 가장 상세한 버전을 유지하고 `<!-- VENDOR MERGE CONFLICT: {내용} -->`으로 표시한다
+- 도구 전용 설정(모델명, IDE 단축키, 플러그인 설정)은 이식 불가 — 폐기한다
+- AGENTS.md 생성 완료 후, 벤더 파일은 부트스트랩 인덱스로 변환한다 (7단계 참조)
+
+**벤더 파일이 없으면:** 이 단계를 건너뛴다.
 
 ### 2단계: 디렉토리 유형 자동 판별
 
@@ -437,7 +474,51 @@ DB 스키마 변경     → data-model.md 업데이트
 비즈니스 정책 변경  → domain-overview.md 업데이트
 외부 연동 변경     → external-integration.md 업데이트
 인프라 구성 변경    → infra-spec.md 업데이트
+KPI/OKR 목표 변경  → business-metrics.md 업데이트
+팀 구조 변경       → stakeholder-map.md 업데이트
+운영 절차 변경     → ops-runbook.md 업데이트
+마일스톤/로드맵 변경 → planning-roadmap.md 업데이트
 ```
+
+### 7단계: 벤더 파일을 부트스트랩 인덱스로 변환
+
+1.5단계에서 기존 벤더 파일의 내용을 흡수했다면, 해당 파일에는 이미 AGENTS.md + `.ai-agents/context/`에 병합된 지식이 들어 있다. 흡수된 내용을 AGENTS.md를 가리키는 경량 부트스트랩 인덱스로 교체한다.
+
+**흡수된 각 벤더 파일에 대해:**
+
+1. 원본 내용을 `.pre-agents.bak` 파일로 **백업** (내용 유실 방지)
+2. 파일 내용을 부트스트랩 지시문으로만 **교체**
+3. 이식 불가능한 도구 전용 설정은 벤더 파일에 **보존**
+
+**예시 — CLAUDE.md 변환:**
+
+변환 전 (흡수됨):
+```markdown
+# 프로젝트 가이드라인
+## 컨벤션
+- Conventional Commits 사용 (feat:, fix:, chore:)
+- main 직접 푸시 금지
+## 도메인
+- 이 서비스는 주문 관리를 담당...
+```
+
+변환 후 (부트스트랩 인덱스):
+```markdown
+## Session Start
+At the start of every session, read `AGENTS.md` (project root) and follow its instructions.
+If `.ai-agents/context/` exists, load the files listed in the Context Files section of AGENTS.md.
+
+<!-- 원본 내용은 AGENTS.md + .ai-agents/context/에 흡수됨 -->
+<!-- 백업: CLAUDE.md.pre-agents.bak -->
+```
+
+**규칙:**
+- 1.5단계에서 실제로 흡수한 파일만 변환한다
+- 흡수할 내용이 없는 벤더 파일(도구 전용 설정만 있는 경우)은 그대로 두고 부트스트랩 지시문만 추가한다
+- `.pre-agents.bak` 파일은 프로젝트 루트에 `{파일명}.pre-agents.bak` 패턴으로 생성한다
+- `.gitignore`가 있으면 `.pre-agents.bak` 항목을 추가한다 (백업은 로컬 전용)
+
+**1.5단계를 건너뛰었다면 (벤더 파일 없음):** 이 단계도 건너뛴다. 벤더 부트스트랩은 Part D의 부트스트랩 생성기로 신규 생성된다.
 
 ---
 
