@@ -6,11 +6,16 @@
 ## 에이전트 트리
 ```
 AGENTS.md (루트 PM — 현재 파일)
-└── docs/AGENTS.md (다국어 문서 관리)
+├── docs/AGENTS.md (다국어 문서 관리)
+├── planning/AGENTS.md (기술 문서 / 기획)
+└── business/AGENTS.md (사업화 기획 / 전략)
 ```
 
 ## 컨텍스트 파일
 - 도메인: `.ai-agents/context/domain-overview.md`
+- 로드맵: `.ai-agents/context/planning-roadmap.md`
+- 이해관계자: `.ai-agents/context/stakeholder-map.md`
+- 비즈니스 지표: `.ai-agents/context/business-metrics.md`
 
 ## 세션 시작
 세션 시작 시 위 컨텍스트 파일과 에이전트 트리를 읽고 전체 프로젝트를 파악한다.
@@ -18,6 +23,8 @@ AGENTS.md (루트 PM — 현재 파일)
 ## 위임
 - 셸 스크립트 변경 → 루트 AGENTS.md 참조
 - 문서/번역 변경 → `docs/AGENTS.md` 참조
+- 스펙/로드맵/아키텍처 문서 변경 → `planning/AGENTS.md` 참조
+- 사업 전략/KPI/GTM 문서 변경 → `business/AGENTS.md` 참조
 - HOW_TO_AGENTS.md 변경 → 루트 AGENTS.md 참조 (핵심 산출물)
 
 ## 글로벌 규약

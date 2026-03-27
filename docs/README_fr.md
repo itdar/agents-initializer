@@ -26,17 +26,25 @@ cd agents-initializer
 ```
 === AI Agent Sessions ===
 Project: /home/user/agents-initializer
-Found: 2 agent(s)
+Found: 4 agent(s)
 
   1) [PM] ai-initializer                (bg: Warm Brown)
      Path: ./AGENTS.md
      Project orchestrator managing all sub-agents
 
-  2) docs                                (bg: Navy)
-     Path: docs/AGENTS.md
-     Documentation specialist
+  2) business — Business Planner         (bg: Navy)
+     Path: business/AGENTS.md
+     Business strategy, KPI tracking, go-to-market
 
-Select agent (number, or 'q' to quit): 1
+  3) docs — Multi-language Docs          (bg: Forest)
+     Path: docs/AGENTS.md
+     Documentation and translation specialist
+
+  4) planning — Technical Writer         (bg: Plum)
+     Path: planning/AGENTS.md
+     Specs, roadmaps, architecture documents
+
+Select agent (number, or 'q' to quit): 2
 
 === AI Tool ===
   1) claude  (Claude Code CLI)
