@@ -111,6 +111,51 @@ if ! $HAS_CLAUDE && ! $HAS_CODEX && ! $HAS_GEMINI; then
   exit 1
 fi
 
+# --- Check for existing setup ---
+EXISTING_AGENTS=0
+HAS_AI_AGENTS_DIR=false
+SETUP_MODE="full"
+
+if command -v find &>/dev/null; then
+  EXISTING_AGENTS=$(find "$PROJECT_ROOT" -name "AGENTS.md" -not -path "*/.git/*" -not -path "*/.omc/*" -not -path "*/node_modules/*" 2>/dev/null | wc -l | tr -d ' ')
+fi
+if [[ -d "$PROJECT_ROOT/.ai-agents" ]]; then
+  HAS_AI_AGENTS_DIR=true
+fi
+
+if [[ "$EXISTING_AGENTS" -gt 0 ]] || $HAS_AI_AGENTS_DIR; then
+  echo ""
+  echo -e "  ${YELLOW}⚠  Existing setup detected:${NC}"
+  if [[ "$EXISTING_AGENTS" -gt 0 ]]; then
+    echo -e "     ${DIM}${EXISTING_AGENTS} AGENTS.md file(s) found${NC}"
+  fi
+  if $HAS_AI_AGENTS_DIR; then
+    echo -e "     ${DIM}.ai-agents/ directory exists${NC}"
+  fi
+  echo ""
+  echo -e "  ${BOLD}How would you like to proceed?${NC}"
+  echo -e "  ${GREEN}1)${NC} ${BOLD}Full regeneration${NC}     ${DIM}(overwrites everything)${NC}"
+  echo -e "  ${GREEN}2)${NC} ${BOLD}Incremental update${NC}    ${DIM}(new directories only, preserves existing)${NC}"
+  echo -e "  ${GREEN}3)${NC} Cancel"
+  echo ""
+  echo -ne "  ${BOLD}Select mode (1-3):${NC} "
+  read -r mode_choice
+
+  case "$mode_choice" in
+    1) SETUP_MODE="full" ;;
+    2) SETUP_MODE="incremental" ;;
+    3|q|Q)
+      echo -e "  ${YELLOW}Setup cancelled.${NC}"
+      exit 0
+      ;;
+    *)
+      echo -e "${RED}  Invalid selection. Exiting.${NC}"
+      exit 1
+      ;;
+  esac
+  echo -e "  ${DIM}→ Mode: ${SETUP_MODE}${NC}"
+fi
+
 echo ""
 
 # =============================================================================
@@ -231,10 +276,16 @@ echo ""
 # Build the full prompt — replace HOW_TO_AGENTS.md reference with actual file path
 FULL_PROMPT="${SELECTED_PROMPT//HOW_TO_AGENTS.md/$HOW_TO_FILE}${LANG_SUFFIX}"
 
+# Append incremental mode instructions if applicable
+if [[ "$SETUP_MODE" == "incremental" ]]; then
+  FULL_PROMPT="${FULL_PROMPT} IMPORTANT: This is an incremental update. Do NOT overwrite existing AGENTS.md files or .ai-agents/context/ files that already have content. Only generate AGENTS.md for directories that do not already have one. Only create new .ai-agents/context/ files that do not yet exist. Preserve all existing files and their content."
+fi
+
 # Show what will be executed
 echo -e "  ${DIM}Tool:     ${SELECTED_TOOL}${NC}"
 echo -e "  ${DIM}Language: ${SELECTED_LANG}${NC}"
 echo -e "  ${DIM}Guide:    ${HOW_TO_FILE}${NC}"
+echo -e "  ${DIM}Mode:     ${SETUP_MODE}${NC}"
 echo -e "  ${DIM}Prompt:   ${FULL_PROMPT}${NC}"
 echo ""
 

@@ -3,17 +3,17 @@ set -euo pipefail
 
 # =============================================================================
 # ai-agent-session.sh
-# AGENTS.md 기반 에이전트 세션 런처
+# AGENTS.md-based agent session launcher
 #
-# 프로젝트 내 AGENTS.md 파일들을 스캔하여 에이전트 목록을 표시하고,
-# 선택한 에이전트의 컨텍스트로 AI 도구 세션을 시작한다.
+# Scans the project for AGENTS.md files, displays the agent list,
+# and starts an AI tool session with the selected agent's context.
 #
 # Usage:
-#   ./ai-agency.sh                    # 대화형 선택
-#   ./ai-agency.sh --tool claude      # 도구 지정
-#   ./ai-agency.sh --agent infra      # 에이전트 검색어로 선택
-#   ./ai-agency.sh --multi            # tmux 멀티 세션
-#   ./ai-agency.sh --list             # 에이전트 목록만 출력
+#   ./ai-agency.sh                    # Interactive selection
+#   ./ai-agency.sh --tool claude      # Specify tool
+#   ./ai-agency.sh --agent infra      # Select agent by keyword
+#   ./ai-agency.sh --multi            # tmux multi-session
+#   ./ai-agency.sh --list             # Print agent list only
 #
 # Tip: Use iTerm2 (or kitty/WezTerm) for per-agent background colors.
 #      IDE built-in terminals (IntelliJ, VS Code) do not support background
@@ -219,11 +219,11 @@ while [[ $# -gt 0 ]]; do
       echo "Usage: $0 [options]"
       echo ""
       echo "Options:"
-      echo "  -t, --tool <claude|codex|cursor>   AI 도구 선택"
-      echo "  -a, --agent <keyword>              에이전트 검색어로 직접 선택"
-      echo "  -m, --multi                        tmux 멀티 에이전트 세션"
-      echo "  -l, --list                         에이전트 목록만 출력"
-      echo "  -h, --help                         도움말"
+      echo "  -t, --tool <claude|codex|cursor>   Select AI tool"
+      echo "  -a, --agent <keyword>              Select agent by keyword"
+      echo "  -m, --multi                        tmux multi-agent session"
+      echo "  -l, --list                         Print agent list only"
+      echo "  -h, --help                         Show this help"
       exit 0
       ;;
     *) echo "Unknown option: $1"; exit 1 ;;
@@ -266,11 +266,11 @@ scan_agents() {
 scan_agents "$PROJECT_ROOT"
 
 if [[ ${#AGENT_PATHS[@]} -eq 0 ]]; then
-  echo -e "${RED}AGENTS.md 파일을 찾을 수 없습니다.${NC}"
+  echo -e "${RED}No AGENTS.md files found.${NC}"
   echo ""
-  echo "먼저 AGENTS.md 파일들을 생성하세요:"
-  echo "  1. ./setup.sh 실행 (대화형 자동 세팅)"
-  echo "  2. 또는 수동: claude --dangerously-skip-permissions \"Read HOW_TO_AGENTS.md and generate AGENTS.md tailored to this project\""
+  echo "Generate AGENTS.md files first:"
+  echo "  1. Run ./setup.sh (interactive auto-setup)"
+  echo "  2. Or manually: claude --dangerously-skip-permissions \"Read HOW_TO_AGENTS.md and generate AGENTS.md tailored to this project\""
   exit 1
 fi
 
@@ -330,14 +330,14 @@ select_agent() {
         return 0
       fi
     done
-    echo -e "${RED}\"${AGENT_FILTER}\"와 일치하는 에이전트를 찾을 수 없습니다.${NC}"
+    echo -e "${RED}No agent matching \"${AGENT_FILTER}\" found.${NC}"
     exit 1
   fi
 
   # Interactive selection
   display_agents
 
-  echo -e "${BOLD}Select agent (number, or 'q' to quit):${NC} "
+  echo -ne "${BOLD}Select agent (number, or 'q' to quit):${NC} "
   read -r choice
 
   [[ "$choice" == "q" || "$choice" == "Q" ]] && exit 0
@@ -360,7 +360,7 @@ select_tool() {
   echo -e "${BOLD}=== AI Tool ===${NC}"
   echo -e "  ${GREEN}1)${NC} claude  ${DIM}(Claude Code CLI)${NC}"
   echo -e "  ${GREEN}2)${NC} codex   ${DIM}(OpenAI Codex CLI)${NC}"
-  echo -e "  ${GREEN}3)${NC} print   ${DIM}(프롬프트만 출력 — 수동 복사용)${NC}"
+  echo -e "  ${GREEN}3)${NC} print   ${DIM}(print prompt only — for manual copy)${NC}"
   echo ""
   echo -e "${BOLD}Select tool (1-3):${NC} "
   read -r tool_choice
@@ -386,20 +386,20 @@ build_prompt() {
   if [[ "$dir" != "." ]]; then
     local root_agents="${PROJECT_ROOT}/AGENTS.md"
     if [[ -f "$root_agents" ]]; then
-      prompt+="먼저 프로젝트 루트의 AGENTS.md(${root_agents})를 읽어 전체 프로젝트 컨텍스트를 파악하라. "
+      prompt+="First read the root AGENTS.md (${root_agents}) to understand the full project context. "
     fi
   fi
 
   # Include the selected agent's AGENTS.md
-  prompt+="${agents_file}를 읽고, 해당 에이전트의 역할과 권한에 따라 작업하라. "
+  prompt+="Read ${agents_file} and work according to this agent's role and permissions. "
 
   # Add working directory context
   if [[ "$dir" != "." ]]; then
-    prompt+="작업 범위는 ${PROJECT_ROOT}/${dir}/ 디렉토리이다. "
-    prompt+="이 범위를 벗어나는 변경은 PM 에이전트에게 위임하라."
+    prompt+="Working scope is the ${PROJECT_ROOT}/${dir}/ directory. "
+    prompt+="Delegate changes outside this scope to the PM agent."
   else
-    prompt+="전체 프로젝트를 관리하는 PM 에이전트로서 작업하라. "
-    prompt+="하위 에이전트가 있는 디렉토리의 작업은 해당 에이전트에 위임하라."
+    prompt+="Work as the PM agent managing the entire project. "
+    prompt+="Delegate tasks in directories that have their own agents to those agents."
   fi
 
   echo "$prompt"
@@ -464,7 +464,7 @@ launch_session() {
 # --- Multi-agent tmux session ---
 launch_multi() {
   if ! command -v tmux &>/dev/null; then
-    echo -e "${RED}tmux가 설치되어 있지 않습니다. brew install tmux${NC}"
+    echo -e "${RED}tmux is not installed. Run: brew install tmux${NC}"
     exit 1
   fi
 
