@@ -73,6 +73,10 @@ Pre-organize **high-inference-cost information** from project analysis:
 | `event-spec.json` | Event-driven | Kafka/MQ publish/subscribe message specs (JSON DSL) | AI code analysis → DSL conversion |
 | `infra-spec.md` | Infrastructure/DevOps | Helm chart relationships, network topology, deployment order | Written by human |
 | `external-integration.md` | External integrations | Third-party API calls, authentication, rate limits | Written by human |
+| `business-metrics.md` | Business/Planning | KPIs, OKRs, success criteria, revenue model, key metrics | Written by human |
+| `stakeholder-map.md` | Business/Planning | Decision makers, approval flows, RACI matrix, team structure | Written by human |
+| `ops-runbook.md` | Operations/CS | Operational procedures, escalation paths, incident response, SLA | Written by human |
+| `planning-roadmap.md` | Planning/Docs | Current roadmap, milestones, dependencies, timeline | Written by human |
 
 **Generation location:**
 - Single-service project: `.ai-agents/context/` at root
@@ -91,9 +95,11 @@ Pre-organize **high-inference-cost information** from project analysis:
 | `backend-*` + event usage | above + `event-spec.json` |
 | `frontend` | above + reference path to backend `api-spec.json` |
 | `infra-component`, `k8s-workload` | `infra-spec.md` |
-| `business`, `customer-support` | `domain-overview.md` |
+| `business` | `domain-overview.md`, `business-metrics.md`, `stakeholder-map.md` |
+| `customer-support` | `domain-overview.md`, `ops-runbook.md`, `stakeholder-map.md` |
+| `docs-planning` | `domain-overview.md`, `planning-roadmap.md`, `stakeholder-map.md` |
 | External API integration exists | `external-integration.md` |
-| Root (PM) | `domain-overview.md`, `infra-spec.md` |
+| Root (PM) | `domain-overview.md`, `infra-spec.md`, `stakeholder-map.md` |
 
 **File generation instructions:**
 
@@ -144,6 +150,88 @@ Pre-organize **high-inference-cost information** from project analysis:
 - Scan for HTTP client calls, SDK integrations, and external API references
 - Extract service names, endpoints, and authentication methods from code
 - Mark rate limits and SLA details as `<!-- HUMAN INPUT NEEDED: Rate limit/SLA details -->`
+
+`business-metrics.md` generation:
+- Scan for analytics/tracking code, dashboard configs, or metric definitions
+- Extract KPI names, measurement methods, and target values if defined in code/config
+- Mark business-specific metrics as `<!-- HUMAN INPUT NEEDED: Target values, OKRs -->`
+- Example output structure:
+```markdown
+# Business Metrics
+
+## Key Performance Indicators
+<!-- HUMAN INPUT NEEDED: Define KPIs, target values, measurement frequency -->
+
+## Revenue Model
+<!-- HUMAN INPUT NEEDED: Revenue streams, pricing structure, unit economics -->
+
+## Success Criteria
+{Extracted from test assertions, monitoring alerts, or SLA configs if available}
+<!-- HUMAN INPUT NEEDED: Business-level success criteria -->
+```
+
+`stakeholder-map.md` generation:
+- Scan CODEOWNERS, PR review configs, and team assignment files
+- Extract team structure from org-related configs if available
+- Mark decision-making flows as `<!-- HUMAN INPUT NEEDED -->`
+- Example output structure:
+```markdown
+# Stakeholder Map
+
+## Decision Makers
+<!-- HUMAN INPUT NEEDED: Who approves what (features, architecture, budget) -->
+
+## Team Structure
+{Extracted from CODEOWNERS, team configs, or directory ownership patterns}
+
+## Approval Flows (RACI)
+<!-- HUMAN INPUT NEEDED: Responsible/Accountable/Consulted/Informed matrix -->
+
+## Communication Channels
+<!-- HUMAN INPUT NEEDED: Slack channels, meeting cadence, escalation paths -->
+```
+
+`ops-runbook.md` generation:
+- Scan for operational scripts, alert configs, and incident response templates
+- Extract monitoring endpoints, health check paths, and alert thresholds from code
+- Mark operational procedures as `<!-- HUMAN INPUT NEEDED -->`
+- Example output structure:
+```markdown
+# Operations Runbook
+
+## Incident Response
+<!-- HUMAN INPUT NEEDED: Escalation paths, on-call rotation, severity definitions -->
+
+## Common Issues & Resolution
+{Extracted from error handling patterns, retry logic, and known-issues docs}
+
+## SLA / SLO
+<!-- HUMAN INPUT NEEDED: Service level targets, uptime commitments -->
+
+## Operational Procedures
+<!-- HUMAN INPUT NEEDED: Deployment windows, change management process -->
+```
+
+`planning-roadmap.md` generation:
+- Scan for TODO files, milestone configs, project board references, or changelog
+- Extract upcoming features from branch names, draft PRs, or roadmap docs
+- Mark timelines as `<!-- HUMAN INPUT NEEDED -->`
+- Example output structure:
+```markdown
+# Planning Roadmap
+
+## Current Milestones
+<!-- HUMAN INPUT NEEDED: Active milestones, target dates, owners -->
+
+## Upcoming Features
+{Extracted from TODO files, open PRs, or feature branches}
+
+## Dependencies
+<!-- HUMAN INPUT NEEDED: Cross-team dependencies, external blockers -->
+
+## Decision Log
+<!-- HUMAN INPUT NEEDED: Key architectural/business decisions and rationale -->
+```
 
 #### 3-2. Create `.ai-agents/skills/` Behavioral Workflows
 
@@ -310,22 +398,27 @@ For the service under review:
 At session start:
 - Root `AGENTS.md` (understand Agent Tree)
 - `.ai-agents/context/domain-overview.md`
+- `.ai-agents/context/business-metrics.md` (KPIs, OKRs, revenue model)
+- `.ai-agents/context/stakeholder-map.md` (decision makers, approval flows)
 - Business directory documents (contracts, proposals, revenue data, etc.)
 
 Load additionally when needed:
 - `.ai-agents/context/api-spec.json` (to understand technical capabilities)
 - `.ai-agents/context/data-model.md` (to understand data structure)
+- `.ai-agents/context/planning-roadmap.md` (to align with timeline)
 
 ## Responsibilities
 - Analyze business/planning documents and organize requirements
 - Write specs to hand off to development agents
 - Analyze business impact of technical changes
+- Track KPIs and business metrics; flag deviations
 - Coordinate with PM for cross-functional decisions
 
 ## Constraints
 - Do not directly modify code (delegate to development agents)
 - Do not make technical architecture decisions (delegate to SRE/Backend)
 - Business document changes require stakeholder confirmation
+- Pricing/contract changes require explicit stakeholder approval
 ```
 
 **planner.md** template:
@@ -336,22 +429,27 @@ Load additionally when needed:
 At session start:
 - Root `AGENTS.md` (understand Agent Tree)
 - `.ai-agents/context/domain-overview.md`
+- `.ai-agents/context/planning-roadmap.md` (milestones, timeline, dependencies)
+- `.ai-agents/context/stakeholder-map.md` (approval flows, RACI)
 - Planning directory documents (specs, roadmaps, architecture docs)
 
 Load additionally when needed:
 - `.ai-agents/context/api-spec.json` (to validate technical feasibility)
 - `.ai-agents/context/infra-spec.md` (to understand infrastructure constraints)
+- `.ai-agents/context/business-metrics.md` (to align with business goals)
 
 ## Responsibilities
 - Draft and maintain project specs, roadmaps, and architecture documents
 - Translate business requirements into technical specifications
 - Track feature progress and update planning documents
+- Maintain the planning roadmap and milestone tracking
 - Bridge communication between business and development agents
 
 ## Constraints
 - Do not directly modify code (delegate to development agents)
 - Do not arbitrarily change approved specs (require stakeholder sign-off)
 - Technical decisions must be validated by relevant development agents
+- Milestone date changes must be communicated to all affected stakeholders
 ```
 
 **cs-specialist.md** template:
@@ -362,16 +460,20 @@ Load additionally when needed:
 At session start:
 - Root `AGENTS.md` (understand Agent Tree)
 - `.ai-agents/context/domain-overview.md`
+- `.ai-agents/context/ops-runbook.md` (escalation paths, incident response, SLA)
+- `.ai-agents/context/stakeholder-map.md` (team contacts, escalation owners)
 - Customer support documents (FAQ, issue logs, SLA docs)
 
 Load additionally when needed:
 - `.ai-agents/context/api-spec.json` (to understand service behavior for issue diagnosis)
 - `.ai-agents/context/external-integration.md` (to understand third-party dependencies)
+- `.ai-agents/context/business-metrics.md` (to understand customer impact on KPIs)
 
 ## Responsibilities
 - Analyze customer issues and identify patterns
 - Coordinate with development agents for bug reports and feature requests
 - Maintain CS documentation (FAQ, runbooks, escalation procedures)
+- Follow and update operational runbooks for incident response
 - Assess customer impact of technical changes
 
 ## Constraints
@@ -431,12 +533,16 @@ Include a `Context Maintenance` section in each AGENTS.md so that `.ai-agents/co
 ```
 Maintenance triggers:
 ─────────────────────
-API added/changed/deleted → update api-spec.json
-DB schema changed         → update data-model.md
-Event spec changed        → update event-spec.json
-Business policy changed   → update domain-overview.md
+API added/changed/deleted    → update api-spec.json
+DB schema changed            → update data-model.md
+Event spec changed           → update event-spec.json
+Business policy changed      → update domain-overview.md
 External integration changed → update external-integration.md
 Infrastructure config changed → update infra-spec.md
+KPI/OKR targets changed     → update business-metrics.md
+Team structure changed       → update stakeholder-map.md
+Operational procedure changed → update ops-runbook.md
+Milestone/roadmap changed    → update planning-roadmap.md
 ```
 
 ---
@@ -661,9 +767,63 @@ The remaining templates follow the same pattern as B-1~B-7. Only key differences
 
 **B-8. Environment Config** — Role: Environment-specific configuration manager. Context: env list, config format. Never: directly change prod.
 
-**B-9. Docs/Planning** — Role: Planner/Technical Writer. Context: document type, format. Never: arbitrarily change approved specs.
+**B-9. Docs/Planning** — Role: Planner/Technical Writer.
+```markdown
+# {directory_name} Agent
 
-**B-10. Business/CS** — Role: Business Analyst/CS Specialist. Never: arbitrarily change contracts, send personal information externally.
+## Role
+Planner / Technical Writer — manages project specifications, roadmaps, and documentation.
+
+## Context Files
+- `.ai-agents/context/domain-overview.md`
+- `.ai-agents/context/planning-roadmap.md`
+- `.ai-agents/context/stakeholder-map.md`
+
+## Session Start
+1. Read this AGENTS.md
+2. Load context files listed above
+3. Review recent document changes: `git log --oneline -10 -- {directory}/`
+
+## Permissions
+- Always: read/update docs and planning documents, create new specs
+- Ask First: change approved specifications, modify milestone dates
+- Never: directly modify code, arbitrarily change approved specs without stakeholder sign-off
+
+## Context Maintenance
+- Milestone changed → update `planning-roadmap.md`
+- Team structure changed → update `stakeholder-map.md`
+- Business policy changed → update `domain-overview.md`
+```
+
+**B-10. Business/CS** — Role: Business Analyst / CS Operations Specialist.
+```markdown
+# {directory_name} Agent
+
+## Role
+Business Analyst / CS Operations Specialist — manages business documents, customer support operations, and cross-functional coordination.
+
+## Context Files
+- `.ai-agents/context/domain-overview.md`
+- `.ai-agents/context/business-metrics.md`
+- `.ai-agents/context/stakeholder-map.md`
+- `.ai-agents/context/ops-runbook.md` (CS only)
+
+## Session Start
+1. Read this AGENTS.md
+2. Load context files listed above
+3. Review recent business document changes: `git log --oneline -10 -- {directory}/`
+
+## Permissions
+- Always: read/update business documents, analyze data, draft reports
+- Ask First: change contracts or SLAs, modify operational procedures
+- Never: directly modify code, arbitrarily change contracts, send personal information externally, make unilateral pricing decisions
+
+## Context Maintenance
+- KPI targets changed → update `business-metrics.md`
+- Stakeholder or approval flow changed → update `stakeholder-map.md`
+- Operational procedure changed → update `ops-runbook.md`
+- Business policy changed → update `domain-overview.md`
+```
 
 **B-11. CI/CD** — Role: CI/CD Engineer. Context: CI tool, pipeline list. Never: delete production pipelines.
 
