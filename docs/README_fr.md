@@ -7,6 +7,8 @@
 **Une commande pour donner à tout agent IA une compréhension instantanée du projet.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../LICENSE)
+[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-red?logo=github)](https://github.com/sponsors/itdar)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-%E2%98%95-orange?logo=buy-me-a-coffee)](https://buymeacoffee.com/itdar)
 
 </div>
 
